@@ -38,9 +38,9 @@ function TrendPanel({ summary }: { summary?: DashboardSummary | null }) {
       <Badge tone={hasTrend ? "good" : "warn"}>{hasTrend ? "已就绪" : "等待数据"}</Badge>
     </div>
     {hasTrend ? <div className="mt-6 grid h-[190px] grid-cols-4 items-end gap-3">
-      {trends.map((item) => {
+      {trends.map((item, index) => {
         const height = Math.max(8, item.seoScore ?? item.speedScore ?? Math.min(100, item.impressions * 10 + item.users * 2));
-        return <div key={item.label} className="flex h-full flex-col justify-end gap-2">
+        return <div key={`${item.label}-${index}`} className="flex h-full flex-col justify-end gap-2">
           <div className="rounded-t-lg bg-[#168779]" style={{ height: `${height}%` }} />
           <div className="text-center text-[11px] text-slate-500">{item.label}</div>
         </div>;
@@ -88,7 +88,7 @@ function Priorities({ summary }: { summary?: DashboardSummary | null }) {
   return <Panel className="p-6">
     <div className="flex items-center justify-between"><div><h2 className="font-semibold"><GlossaryLabel>优先处理事项</GlossaryLabel></h2><p className="mt-1 text-xs text-slate-500">由真实告警和扫描结果生成</p></div><BarChart3 className="text-[#168779]" /></div>
     {priorities.length > 0 ? <div className="mt-5 space-y-3">
-      {priorities.map((item) => <div key={item.title} className="rounded-lg border border-[#edf1f2] p-4">
+      {priorities.map((item, index) => <div key={`${item.title}-${item.detail}-${index}`} className="rounded-lg border border-[#edf1f2] p-4">
         <div className="flex items-start justify-between gap-3"><p className="text-sm font-semibold">{item.title}</p><Badge tone={item.tone}>{item.tone === "danger" ? "高" : item.tone === "warn" ? "中" : "好"}</Badge></div>
         <p className="mt-2 text-xs leading-5 text-slate-500">{item.detail}</p>
       </div>)}
@@ -114,7 +114,7 @@ export function OverviewDashboard({ summary }: { summary?: DashboardSummary | nu
     </div>
 
     <div className="mt-4 grid gap-px overflow-hidden rounded-2xl border border-[#e6ebee] bg-[#e6ebee] sm:grid-cols-2 xl:grid-cols-4">
-      {(hasMetrics ? metrics : [{ label: "已发现 URL", value: "--", detail: "创建站点或抓取站点地图。", status: "missing" as const }]).map((metric) => <div key={metric.label} className="bg-white p-5"><div className="flex items-start justify-between gap-3"><p className="text-xs font-medium text-slate-500"><GlossaryLabel>{metric.label}</GlossaryLabel></p><span className={`text-xs font-semibold ${metric.status === "ready" ? "text-[#168779]" : "text-amber-600"}`}>{metric.status === "ready" ? "已就绪" : "未配置"}</span></div><p className={`mt-3 text-3xl font-semibold tracking-[-.04em] ${metric.status === "ready" ? "text-[#17212b]" : "text-slate-300"}`}>{metric.value}</p><p className="mt-2 text-[11px] text-slate-400">{metric.detail}</p></div>)}
+      {(hasMetrics ? metrics : [{ label: "已发现 URL", value: "--", detail: "创建站点或抓取站点地图。", status: "missing" as const }]).map((metric, index) => <div key={`${metric.label}-${index}`} className="bg-white p-5"><div className="flex items-start justify-between gap-3"><p className="text-xs font-medium text-slate-500"><GlossaryLabel>{metric.label}</GlossaryLabel></p><span className={`text-xs font-semibold ${metric.status === "ready" ? "text-[#168779]" : "text-amber-600"}`}>{metric.status === "ready" ? "已就绪" : "未配置"}</span></div><p className={`mt-3 text-3xl font-semibold tracking-[-.04em] ${metric.status === "ready" ? "text-[#17212b]" : "text-slate-300"}`}>{metric.value}</p><p className="mt-2 text-[11px] text-slate-400">{metric.detail}</p></div>)}
     </div>
 
     <div className="mt-4 grid gap-4 xl:grid-cols-[1.55fr_.75fr]">
