@@ -1,0 +1,359 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  OWNER
+  ADMIN
+  EDITOR
+  VIEWER
+  CLIENT_VIEWER
+}
+
+enum SiteStatus {
+  ACTIVE
+  PAUSED
+  ARCHIVED
+  DEMO
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  role         Role     @default(VIEWER)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  workspaces   Workspace[] @relation("WorkspaceOwner")
+  memberships  WorkspaceMember[]
+  reports      Report[]
+  auditLogs    AuditLog[]
+}
+
+model Workspace {
+  id        String   @id @default(cuid())
+  name      String
+  ownerId   String
+  owner     User     @relation("WorkspaceOwner", fields: [ownerId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  members   WorkspaceMember[]
+  sites     Site[]
+  shareLinks ShareLink[]
+  auditLogs AuditLog[]
+}
+
+model WorkspaceMember {
+  id          String @id @default(cuid())
+  workspaceId String
+  userId      String
+  role        Role
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  user        User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@unique([workspaceId, userId])
+}
+
+model Site {
+  id             String @id @default(cuid())
+  workspaceId    String
+  name           String
+  domain         String
+  primaryUrl     String
+  sitemapUrl     String?
+  robotsUrl      String?
+  wordpressApiUrl String?
+  timezone       String @default("UTC")
+  status         SiteStatus @default(ACTIVE)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  workspace      Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  brandTerms     SiteBrandTerm[]
+  keywords       SiteKeyword[]
+  integrations   Integration[]
+  urls           Url[]
+  searchPerformance GscSearchPerformance[]
+  indexStatuses  GscIndexStatus[]
+  dailyTraffic   Ga4DailyTraffic[]
+  realtime       Ga4RealtimeSnapshot[]
+  pageSpeed      PageSpeedResult[]
+  audits         TechnicalSeoAudit[]
+  botLogs        AiBotLog[]
+  geoTests       GeoQueryTest[]
+  geoScores      GeoContentScore[]
+  alerts         Alert[]
+  reports        Report[]
+  shareLinks     ShareLink[]
+  @@unique([workspaceId, domain])
+}
+
+model SiteBrandTerm {
+  id String @id @default(cuid())
+  siteId String
+  term String
+  type String
+  site Site @relation(fields: [siteId], references: [id], onDelete: Cascade)
+}
+
+model SiteKeyword {
+  id String @id @default(cuid())
+  siteId String
+  keyword String
+  groupName String?
+  priority Int @default(0)
+  country String?
+  language String? @default("en")
+  enabled Boolean @default(true)
+  site Site @relation(fields: [siteId], references: [id], onDelete: Cascade)
+}
+
+model Integration {
+  id String @id @default(cuid())
+  siteId String
+  provider String
+  configEncrypted String
+  status String @default("DISCONNECTED")
+  lastTestedAt DateTime?
+  lastError String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  site Site @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  @@unique([siteId, provider])
+}
+
+model Url {
+  id String @id @default(cuid())
+  siteId String
+  url String
+  path String
+  pageType String?
+  title String?
+  isCore Boolean @default(false)
+  isInSitemap Boolean @default(false)
+  statusCode Int?
+  lastCrawledAt DateTime?
+  site Site @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  indexStatuses GscIndexStatus[]
+  pageSpeed PageSpeedResult[]
+  audits TechnicalSeoAudit[]
+  geoScores GeoContentScore[]
+  @@unique([siteId, url])
+}
+
+model GscSearchPerformance {
+  id String @id @default(cuid())
+  siteId String
+  date DateTime
+  query String
+  page String
+  country String?
+  device String?
+  clicks Float @default(0)
+  impressions Float @default(0)
+  ctr Float @default(0)
+  position Float @default(0)
+  site Site @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  @@index([siteId, date])
+}
+
+model GscIndexStatus {
+  id String @id @default(cuid())
+  siteId String
+  urlId String
+  verdict String?
+  coverageState String?
+  indexingState String?
+  robotsTxtState String?
+  googleCanonical String?
+  userCanonical String?
+  sitemap String?
+  lastCrawlTime DateTime?
+  rawJson Json?
+  checkedAt DateTime @default(now())
+  site Site @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  url Url @relation(fields: [urlId], references: [id], onDelete: Cascade)
+}
+
+model Ga4DailyTraffic {
+  id String @id @default(cuid())
+  siteId String
+  date DateTime
+  pagePath String?
+  source String?
+  medium String?
+  country String?
+  device String?
+  activeUsers Int @default(0)
+  sessions Int @default(0)
+  pageViews Int @default(0)
+  conversions Int @default(0)
+  eventCount Int @default(0)
+  site Site @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  @@index([siteId, date])
+}
+
+model Ga4RealtimeSnapshot {
+  id String @id @default(cuid())
+  siteId String
+  snapshotTime DateTime @default(now())
+  activeUsers Int @default(0)
+  country String?
+  pagePath String?
+  source String?
+  eventName String?
+  site Site @relation(fields: [siteId], references: [id], onDelete: Cascade)
+}
+
+model PageSpeedResult {
+  id String @id @default(cuid())
+  siteId String
+  urlId String
+  strategy String
+  performanceScore Int?
+  seoScore Int?
+  accessibilityScore Int?
+  bestPracticesScore Int?
+  lcp Float?
+  inp Float?
+  cls Float?
+  fcp Float?
+  ttfb Float?
+  rawJson Json?
+  checkedAt DateTime @default(now())
+  site Site @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  url Url @relation(fields: [urlId], references: [id], onDelete: Cascade)
+}
+
+model TechnicalSeoAudit {
+  id String @id @default(cuid())
+  siteId String
+  urlId String
+  title String?
+  titleLength Int?
+  metaDescription String?
+  metaDescriptionLength Int?
+  h1Count Int?
+  canonical String?
+  robotsMeta String?
+  imageCount Int?
+  imageMissingAltCount Int?
+  internalLinks Int?
+  externalLinks Int?
+  schemaDetected Boolean @default(false)
+  wordCount Int?
+  seoScore Int?
+  issuesJson Json?
+  checkedAt DateTime @default(now())
+  site Site @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  url Url @relation(fields: [urlId], references: [id], onDelete: Cascade)
+}
+
+model AiBotLog {
+  id String @id @default(cuid())
+  siteId String
+  botName String
+  userAgent String
+  ip String?
+  url String
+  statusCode Int
+  referer String?
+  country String?
+  officialIpVerified Boolean @default(false)
+  visitedAt DateTime
+  site Site @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  @@index([siteId, visitedAt])
+}
+
+model GeoQueryTest {
+  id String @id @default(cuid())
+  siteId String
+  provider String
+  query String
+  brandMentioned Boolean @default(false)
+  domainMentioned Boolean @default(false)
+  citedUrl String?
+  competitorsMentionedJson Json?
+  answerSummary String?
+  rawResponse String?
+  screenshotUrl String?
+  score Int @default(0)
+  checkedAt DateTime @default(now())
+  site Site @relation(fields: [siteId], references: [id], onDelete: Cascade)
+}
+
+model GeoContentScore {
+  id String @id @default(cuid())
+  siteId String
+  urlId String
+  brandClarityScore Int @default(0)
+  companyEntityScore Int @default(0)
+  productCoverageScore Int @default(0)
+  faqScore Int @default(0)
+  schemaScore Int @default(0)
+  aiCitationScore Int @default(0)
+  totalScore Int @default(0)
+  checkedAt DateTime @default(now())
+  site Site @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  url Url @relation(fields: [urlId], references: [id], onDelete: Cascade)
+}
+
+model Alert {
+  id String @id @default(cuid())
+  siteId String
+  alertType String
+  severity String
+  title String
+  message String
+  status String @default("OPEN")
+  createdAt DateTime @default(now())
+  resolvedAt DateTime?
+  site Site @relation(fields: [siteId], references: [id], onDelete: Cascade)
+}
+
+model Report {
+  id String @id @default(cuid())
+  siteId String
+  reportType String
+  title String
+  periodStart DateTime
+  periodEnd DateTime
+  fileUrl String?
+  summaryJson Json?
+  createdBy String
+  createdAt DateTime @default(now())
+  site Site @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  creator User @relation(fields: [createdBy], references: [id])
+}
+
+model ShareLink {
+  id String @id @default(cuid())
+  workspaceId String
+  siteId String?
+  resourceType String
+  resourceId String
+  tokenHash String
+  passwordHash String?
+  expiresAt DateTime?
+  revokedAt DateTime?
+  createdAt DateTime @default(now())
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  site Site? @relation(fields: [siteId], references: [id], onDelete: Cascade)
+}
+
+model AuditLog {
+  id String @id @default(cuid())
+  workspaceId String
+  userId String?
+  action String
+  entityType String
+  entityId String?
+  metadataJson Json?
+  createdAt DateTime @default(now())
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  user User? @relation(fields: [userId], references: [id])
+}

@@ -1,0 +1,32 @@
+import { prisma } from "@/lib/db/client";
+import { fetchSitemapUrls, pathFromUrl } from "@/lib/sitemap";
+import { syncGoogleProviders } from "@/lib/providers/google-sync";
+import { runPageSpeedChecks } from "@/lib/providers/pagespeed-sync";
+
+export async function syncSitemap(siteId: string) {
+  const site = await prisma.site.findUnique({ where: { id: siteId } });
+  if (!site) throw new Error("Site not found");
+  if (!site.sitemapUrl) return { provider: "sitemap", ok: false, rows: 0, error: "Site does not have sitemapUrl configured." };
+  try {
+    const urls = await fetchSitemapUrls(site.sitemapUrl);
+    const results = await Promise.all(urls.map((item) => prisma.url.upsert({
+      where: { siteId_url: { siteId: site.id, url: item.loc } },
+      update: { isInSitemap: true, path: pathFromUrl(item.loc) },
+      create: { siteId: site.id, url: item.loc, path: pathFromUrl(item.loc), isInSitemap: true },
+    })));
+    return { provider: "sitemap", ok: true, rows: results.length };
+  } catch (error) {
+    return { provider: "sitemap", ok: false, rows: 0, error: error instanceof Error ? error.message : "Failed to fetch sitemap." };
+  }
+}
+
+export async function syncSite(siteId: string) {
+  const site = await prisma.site.findUnique({ where: { id: siteId }, select: { id: true } });
+  if (!site) throw new Error("Site not found");
+  const sitemap = await syncSitemap(siteId);
+  const [google, pagespeed] = await Promise.all([
+    syncGoogleProviders(siteId),
+    runPageSpeedChecks(siteId),
+  ]);
+  return { results: [sitemap, ...google, pagespeed] };
+}
