@@ -261,6 +261,7 @@ export type UrlWhereInput = {
   pageSpeed?: Prisma.PageSpeedResultListRelationFilter
   audits?: Prisma.TechnicalSeoAuditListRelationFilter
   geoScores?: Prisma.GeoContentScoreListRelationFilter
+  indexNowSubmissions?: Prisma.IndexNowSubmissionListRelationFilter
 }
 
 export type UrlOrderByWithRelationInput = {
@@ -279,6 +280,7 @@ export type UrlOrderByWithRelationInput = {
   pageSpeed?: Prisma.PageSpeedResultOrderByRelationAggregateInput
   audits?: Prisma.TechnicalSeoAuditOrderByRelationAggregateInput
   geoScores?: Prisma.GeoContentScoreOrderByRelationAggregateInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionOrderByRelationAggregateInput
 }
 
 export type UrlWhereUniqueInput = Prisma.AtLeast<{
@@ -301,6 +303,7 @@ export type UrlWhereUniqueInput = Prisma.AtLeast<{
   pageSpeed?: Prisma.PageSpeedResultListRelationFilter
   audits?: Prisma.TechnicalSeoAuditListRelationFilter
   geoScores?: Prisma.GeoContentScoreListRelationFilter
+  indexNowSubmissions?: Prisma.IndexNowSubmissionListRelationFilter
 }, "id" | "siteId_url">
 
 export type UrlOrderByWithAggregationInput = {
@@ -352,6 +355,7 @@ export type UrlCreateInput = {
   pageSpeed?: Prisma.PageSpeedResultCreateNestedManyWithoutUrlInput
   audits?: Prisma.TechnicalSeoAuditCreateNestedManyWithoutUrlInput
   geoScores?: Prisma.GeoContentScoreCreateNestedManyWithoutUrlInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionCreateNestedManyWithoutUrlRecordInput
 }
 
 export type UrlUncheckedCreateInput = {
@@ -369,6 +373,7 @@ export type UrlUncheckedCreateInput = {
   pageSpeed?: Prisma.PageSpeedResultUncheckedCreateNestedManyWithoutUrlInput
   audits?: Prisma.TechnicalSeoAuditUncheckedCreateNestedManyWithoutUrlInput
   geoScores?: Prisma.GeoContentScoreUncheckedCreateNestedManyWithoutUrlInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionUncheckedCreateNestedManyWithoutUrlRecordInput
 }
 
 export type UrlUpdateInput = {
@@ -386,6 +391,7 @@ export type UrlUpdateInput = {
   pageSpeed?: Prisma.PageSpeedResultUpdateManyWithoutUrlNestedInput
   audits?: Prisma.TechnicalSeoAuditUpdateManyWithoutUrlNestedInput
   geoScores?: Prisma.GeoContentScoreUpdateManyWithoutUrlNestedInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionUpdateManyWithoutUrlRecordNestedInput
 }
 
 export type UrlUncheckedUpdateInput = {
@@ -403,6 +409,7 @@ export type UrlUncheckedUpdateInput = {
   pageSpeed?: Prisma.PageSpeedResultUncheckedUpdateManyWithoutUrlNestedInput
   audits?: Prisma.TechnicalSeoAuditUncheckedUpdateManyWithoutUrlNestedInput
   geoScores?: Prisma.GeoContentScoreUncheckedUpdateManyWithoutUrlNestedInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionUncheckedUpdateManyWithoutUrlRecordNestedInput
 }
 
 export type UrlCreateManyInput = {
@@ -510,6 +517,11 @@ export type UrlScalarRelationFilter = {
   isNot?: Prisma.UrlWhereInput
 }
 
+export type UrlNullableScalarRelationFilter = {
+  is?: Prisma.UrlWhereInput | null
+  isNot?: Prisma.UrlWhereInput | null
+}
+
 export type UrlCreateNestedManyWithoutSiteInput = {
   create?: Prisma.XOR<Prisma.UrlCreateWithoutSiteInput, Prisma.UrlUncheckedCreateWithoutSiteInput> | Prisma.UrlCreateWithoutSiteInput[] | Prisma.UrlUncheckedCreateWithoutSiteInput[]
   connectOrCreate?: Prisma.UrlCreateOrConnectWithoutSiteInput | Prisma.UrlCreateOrConnectWithoutSiteInput[]
@@ -574,6 +586,22 @@ export type UrlUpdateOneRequiredWithoutIndexStatusesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UrlUpdateToOneWithWhereWithoutIndexStatusesInput, Prisma.UrlUpdateWithoutIndexStatusesInput>, Prisma.UrlUncheckedUpdateWithoutIndexStatusesInput>
 }
 
+export type UrlCreateNestedOneWithoutIndexNowSubmissionsInput = {
+  create?: Prisma.XOR<Prisma.UrlCreateWithoutIndexNowSubmissionsInput, Prisma.UrlUncheckedCreateWithoutIndexNowSubmissionsInput>
+  connectOrCreate?: Prisma.UrlCreateOrConnectWithoutIndexNowSubmissionsInput
+  connect?: Prisma.UrlWhereUniqueInput
+}
+
+export type UrlUpdateOneWithoutIndexNowSubmissionsNestedInput = {
+  create?: Prisma.XOR<Prisma.UrlCreateWithoutIndexNowSubmissionsInput, Prisma.UrlUncheckedCreateWithoutIndexNowSubmissionsInput>
+  connectOrCreate?: Prisma.UrlCreateOrConnectWithoutIndexNowSubmissionsInput
+  upsert?: Prisma.UrlUpsertWithoutIndexNowSubmissionsInput
+  disconnect?: Prisma.UrlWhereInput | boolean
+  delete?: Prisma.UrlWhereInput | boolean
+  connect?: Prisma.UrlWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UrlUpdateToOneWithWhereWithoutIndexNowSubmissionsInput, Prisma.UrlUpdateWithoutIndexNowSubmissionsInput>, Prisma.UrlUncheckedUpdateWithoutIndexNowSubmissionsInput>
+}
+
 export type UrlCreateNestedOneWithoutPageSpeedInput = {
   create?: Prisma.XOR<Prisma.UrlCreateWithoutPageSpeedInput, Prisma.UrlUncheckedCreateWithoutPageSpeedInput>
   connectOrCreate?: Prisma.UrlCreateOrConnectWithoutPageSpeedInput
@@ -630,6 +658,7 @@ export type UrlCreateWithoutSiteInput = {
   pageSpeed?: Prisma.PageSpeedResultCreateNestedManyWithoutUrlInput
   audits?: Prisma.TechnicalSeoAuditCreateNestedManyWithoutUrlInput
   geoScores?: Prisma.GeoContentScoreCreateNestedManyWithoutUrlInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionCreateNestedManyWithoutUrlRecordInput
 }
 
 export type UrlUncheckedCreateWithoutSiteInput = {
@@ -646,6 +675,7 @@ export type UrlUncheckedCreateWithoutSiteInput = {
   pageSpeed?: Prisma.PageSpeedResultUncheckedCreateNestedManyWithoutUrlInput
   audits?: Prisma.TechnicalSeoAuditUncheckedCreateNestedManyWithoutUrlInput
   geoScores?: Prisma.GeoContentScoreUncheckedCreateNestedManyWithoutUrlInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionUncheckedCreateNestedManyWithoutUrlRecordInput
 }
 
 export type UrlCreateOrConnectWithoutSiteInput = {
@@ -704,6 +734,7 @@ export type UrlCreateWithoutIndexStatusesInput = {
   pageSpeed?: Prisma.PageSpeedResultCreateNestedManyWithoutUrlInput
   audits?: Prisma.TechnicalSeoAuditCreateNestedManyWithoutUrlInput
   geoScores?: Prisma.GeoContentScoreCreateNestedManyWithoutUrlInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionCreateNestedManyWithoutUrlRecordInput
 }
 
 export type UrlUncheckedCreateWithoutIndexStatusesInput = {
@@ -720,6 +751,7 @@ export type UrlUncheckedCreateWithoutIndexStatusesInput = {
   pageSpeed?: Prisma.PageSpeedResultUncheckedCreateNestedManyWithoutUrlInput
   audits?: Prisma.TechnicalSeoAuditUncheckedCreateNestedManyWithoutUrlInput
   geoScores?: Prisma.GeoContentScoreUncheckedCreateNestedManyWithoutUrlInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionUncheckedCreateNestedManyWithoutUrlRecordInput
 }
 
 export type UrlCreateOrConnectWithoutIndexStatusesInput = {
@@ -752,6 +784,7 @@ export type UrlUpdateWithoutIndexStatusesInput = {
   pageSpeed?: Prisma.PageSpeedResultUpdateManyWithoutUrlNestedInput
   audits?: Prisma.TechnicalSeoAuditUpdateManyWithoutUrlNestedInput
   geoScores?: Prisma.GeoContentScoreUpdateManyWithoutUrlNestedInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionUpdateManyWithoutUrlRecordNestedInput
 }
 
 export type UrlUncheckedUpdateWithoutIndexStatusesInput = {
@@ -765,6 +798,91 @@ export type UrlUncheckedUpdateWithoutIndexStatusesInput = {
   isInSitemap?: Prisma.BoolFieldUpdateOperationsInput | boolean
   statusCode?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   lastCrawledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pageSpeed?: Prisma.PageSpeedResultUncheckedUpdateManyWithoutUrlNestedInput
+  audits?: Prisma.TechnicalSeoAuditUncheckedUpdateManyWithoutUrlNestedInput
+  geoScores?: Prisma.GeoContentScoreUncheckedUpdateManyWithoutUrlNestedInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionUncheckedUpdateManyWithoutUrlRecordNestedInput
+}
+
+export type UrlCreateWithoutIndexNowSubmissionsInput = {
+  id?: string
+  url: string
+  path: string
+  pageType?: string | null
+  title?: string | null
+  isCore?: boolean
+  isInSitemap?: boolean
+  statusCode?: number | null
+  lastCrawledAt?: Date | string | null
+  site: Prisma.SiteCreateNestedOneWithoutUrlsInput
+  indexStatuses?: Prisma.GscIndexStatusCreateNestedManyWithoutUrlInput
+  pageSpeed?: Prisma.PageSpeedResultCreateNestedManyWithoutUrlInput
+  audits?: Prisma.TechnicalSeoAuditCreateNestedManyWithoutUrlInput
+  geoScores?: Prisma.GeoContentScoreCreateNestedManyWithoutUrlInput
+}
+
+export type UrlUncheckedCreateWithoutIndexNowSubmissionsInput = {
+  id?: string
+  siteId: string
+  url: string
+  path: string
+  pageType?: string | null
+  title?: string | null
+  isCore?: boolean
+  isInSitemap?: boolean
+  statusCode?: number | null
+  lastCrawledAt?: Date | string | null
+  indexStatuses?: Prisma.GscIndexStatusUncheckedCreateNestedManyWithoutUrlInput
+  pageSpeed?: Prisma.PageSpeedResultUncheckedCreateNestedManyWithoutUrlInput
+  audits?: Prisma.TechnicalSeoAuditUncheckedCreateNestedManyWithoutUrlInput
+  geoScores?: Prisma.GeoContentScoreUncheckedCreateNestedManyWithoutUrlInput
+}
+
+export type UrlCreateOrConnectWithoutIndexNowSubmissionsInput = {
+  where: Prisma.UrlWhereUniqueInput
+  create: Prisma.XOR<Prisma.UrlCreateWithoutIndexNowSubmissionsInput, Prisma.UrlUncheckedCreateWithoutIndexNowSubmissionsInput>
+}
+
+export type UrlUpsertWithoutIndexNowSubmissionsInput = {
+  update: Prisma.XOR<Prisma.UrlUpdateWithoutIndexNowSubmissionsInput, Prisma.UrlUncheckedUpdateWithoutIndexNowSubmissionsInput>
+  create: Prisma.XOR<Prisma.UrlCreateWithoutIndexNowSubmissionsInput, Prisma.UrlUncheckedCreateWithoutIndexNowSubmissionsInput>
+  where?: Prisma.UrlWhereInput
+}
+
+export type UrlUpdateToOneWithWhereWithoutIndexNowSubmissionsInput = {
+  where?: Prisma.UrlWhereInput
+  data: Prisma.XOR<Prisma.UrlUpdateWithoutIndexNowSubmissionsInput, Prisma.UrlUncheckedUpdateWithoutIndexNowSubmissionsInput>
+}
+
+export type UrlUpdateWithoutIndexNowSubmissionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  url?: Prisma.StringFieldUpdateOperationsInput | string
+  path?: Prisma.StringFieldUpdateOperationsInput | string
+  pageType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isCore?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isInSitemap?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  statusCode?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  lastCrawledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  site?: Prisma.SiteUpdateOneRequiredWithoutUrlsNestedInput
+  indexStatuses?: Prisma.GscIndexStatusUpdateManyWithoutUrlNestedInput
+  pageSpeed?: Prisma.PageSpeedResultUpdateManyWithoutUrlNestedInput
+  audits?: Prisma.TechnicalSeoAuditUpdateManyWithoutUrlNestedInput
+  geoScores?: Prisma.GeoContentScoreUpdateManyWithoutUrlNestedInput
+}
+
+export type UrlUncheckedUpdateWithoutIndexNowSubmissionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  siteId?: Prisma.StringFieldUpdateOperationsInput | string
+  url?: Prisma.StringFieldUpdateOperationsInput | string
+  path?: Prisma.StringFieldUpdateOperationsInput | string
+  pageType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isCore?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isInSitemap?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  statusCode?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  lastCrawledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  indexStatuses?: Prisma.GscIndexStatusUncheckedUpdateManyWithoutUrlNestedInput
   pageSpeed?: Prisma.PageSpeedResultUncheckedUpdateManyWithoutUrlNestedInput
   audits?: Prisma.TechnicalSeoAuditUncheckedUpdateManyWithoutUrlNestedInput
   geoScores?: Prisma.GeoContentScoreUncheckedUpdateManyWithoutUrlNestedInput
@@ -784,6 +902,7 @@ export type UrlCreateWithoutPageSpeedInput = {
   indexStatuses?: Prisma.GscIndexStatusCreateNestedManyWithoutUrlInput
   audits?: Prisma.TechnicalSeoAuditCreateNestedManyWithoutUrlInput
   geoScores?: Prisma.GeoContentScoreCreateNestedManyWithoutUrlInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionCreateNestedManyWithoutUrlRecordInput
 }
 
 export type UrlUncheckedCreateWithoutPageSpeedInput = {
@@ -800,6 +919,7 @@ export type UrlUncheckedCreateWithoutPageSpeedInput = {
   indexStatuses?: Prisma.GscIndexStatusUncheckedCreateNestedManyWithoutUrlInput
   audits?: Prisma.TechnicalSeoAuditUncheckedCreateNestedManyWithoutUrlInput
   geoScores?: Prisma.GeoContentScoreUncheckedCreateNestedManyWithoutUrlInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionUncheckedCreateNestedManyWithoutUrlRecordInput
 }
 
 export type UrlCreateOrConnectWithoutPageSpeedInput = {
@@ -832,6 +952,7 @@ export type UrlUpdateWithoutPageSpeedInput = {
   indexStatuses?: Prisma.GscIndexStatusUpdateManyWithoutUrlNestedInput
   audits?: Prisma.TechnicalSeoAuditUpdateManyWithoutUrlNestedInput
   geoScores?: Prisma.GeoContentScoreUpdateManyWithoutUrlNestedInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionUpdateManyWithoutUrlRecordNestedInput
 }
 
 export type UrlUncheckedUpdateWithoutPageSpeedInput = {
@@ -848,6 +969,7 @@ export type UrlUncheckedUpdateWithoutPageSpeedInput = {
   indexStatuses?: Prisma.GscIndexStatusUncheckedUpdateManyWithoutUrlNestedInput
   audits?: Prisma.TechnicalSeoAuditUncheckedUpdateManyWithoutUrlNestedInput
   geoScores?: Prisma.GeoContentScoreUncheckedUpdateManyWithoutUrlNestedInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionUncheckedUpdateManyWithoutUrlRecordNestedInput
 }
 
 export type UrlCreateWithoutAuditsInput = {
@@ -864,6 +986,7 @@ export type UrlCreateWithoutAuditsInput = {
   indexStatuses?: Prisma.GscIndexStatusCreateNestedManyWithoutUrlInput
   pageSpeed?: Prisma.PageSpeedResultCreateNestedManyWithoutUrlInput
   geoScores?: Prisma.GeoContentScoreCreateNestedManyWithoutUrlInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionCreateNestedManyWithoutUrlRecordInput
 }
 
 export type UrlUncheckedCreateWithoutAuditsInput = {
@@ -880,6 +1003,7 @@ export type UrlUncheckedCreateWithoutAuditsInput = {
   indexStatuses?: Prisma.GscIndexStatusUncheckedCreateNestedManyWithoutUrlInput
   pageSpeed?: Prisma.PageSpeedResultUncheckedCreateNestedManyWithoutUrlInput
   geoScores?: Prisma.GeoContentScoreUncheckedCreateNestedManyWithoutUrlInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionUncheckedCreateNestedManyWithoutUrlRecordInput
 }
 
 export type UrlCreateOrConnectWithoutAuditsInput = {
@@ -912,6 +1036,7 @@ export type UrlUpdateWithoutAuditsInput = {
   indexStatuses?: Prisma.GscIndexStatusUpdateManyWithoutUrlNestedInput
   pageSpeed?: Prisma.PageSpeedResultUpdateManyWithoutUrlNestedInput
   geoScores?: Prisma.GeoContentScoreUpdateManyWithoutUrlNestedInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionUpdateManyWithoutUrlRecordNestedInput
 }
 
 export type UrlUncheckedUpdateWithoutAuditsInput = {
@@ -928,6 +1053,7 @@ export type UrlUncheckedUpdateWithoutAuditsInput = {
   indexStatuses?: Prisma.GscIndexStatusUncheckedUpdateManyWithoutUrlNestedInput
   pageSpeed?: Prisma.PageSpeedResultUncheckedUpdateManyWithoutUrlNestedInput
   geoScores?: Prisma.GeoContentScoreUncheckedUpdateManyWithoutUrlNestedInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionUncheckedUpdateManyWithoutUrlRecordNestedInput
 }
 
 export type UrlCreateWithoutGeoScoresInput = {
@@ -944,6 +1070,7 @@ export type UrlCreateWithoutGeoScoresInput = {
   indexStatuses?: Prisma.GscIndexStatusCreateNestedManyWithoutUrlInput
   pageSpeed?: Prisma.PageSpeedResultCreateNestedManyWithoutUrlInput
   audits?: Prisma.TechnicalSeoAuditCreateNestedManyWithoutUrlInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionCreateNestedManyWithoutUrlRecordInput
 }
 
 export type UrlUncheckedCreateWithoutGeoScoresInput = {
@@ -960,6 +1087,7 @@ export type UrlUncheckedCreateWithoutGeoScoresInput = {
   indexStatuses?: Prisma.GscIndexStatusUncheckedCreateNestedManyWithoutUrlInput
   pageSpeed?: Prisma.PageSpeedResultUncheckedCreateNestedManyWithoutUrlInput
   audits?: Prisma.TechnicalSeoAuditUncheckedCreateNestedManyWithoutUrlInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionUncheckedCreateNestedManyWithoutUrlRecordInput
 }
 
 export type UrlCreateOrConnectWithoutGeoScoresInput = {
@@ -992,6 +1120,7 @@ export type UrlUpdateWithoutGeoScoresInput = {
   indexStatuses?: Prisma.GscIndexStatusUpdateManyWithoutUrlNestedInput
   pageSpeed?: Prisma.PageSpeedResultUpdateManyWithoutUrlNestedInput
   audits?: Prisma.TechnicalSeoAuditUpdateManyWithoutUrlNestedInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionUpdateManyWithoutUrlRecordNestedInput
 }
 
 export type UrlUncheckedUpdateWithoutGeoScoresInput = {
@@ -1008,6 +1137,7 @@ export type UrlUncheckedUpdateWithoutGeoScoresInput = {
   indexStatuses?: Prisma.GscIndexStatusUncheckedUpdateManyWithoutUrlNestedInput
   pageSpeed?: Prisma.PageSpeedResultUncheckedUpdateManyWithoutUrlNestedInput
   audits?: Prisma.TechnicalSeoAuditUncheckedUpdateManyWithoutUrlNestedInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionUncheckedUpdateManyWithoutUrlRecordNestedInput
 }
 
 export type UrlCreateManySiteInput = {
@@ -1036,6 +1166,7 @@ export type UrlUpdateWithoutSiteInput = {
   pageSpeed?: Prisma.PageSpeedResultUpdateManyWithoutUrlNestedInput
   audits?: Prisma.TechnicalSeoAuditUpdateManyWithoutUrlNestedInput
   geoScores?: Prisma.GeoContentScoreUpdateManyWithoutUrlNestedInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionUpdateManyWithoutUrlRecordNestedInput
 }
 
 export type UrlUncheckedUpdateWithoutSiteInput = {
@@ -1052,6 +1183,7 @@ export type UrlUncheckedUpdateWithoutSiteInput = {
   pageSpeed?: Prisma.PageSpeedResultUncheckedUpdateManyWithoutUrlNestedInput
   audits?: Prisma.TechnicalSeoAuditUncheckedUpdateManyWithoutUrlNestedInput
   geoScores?: Prisma.GeoContentScoreUncheckedUpdateManyWithoutUrlNestedInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionUncheckedUpdateManyWithoutUrlRecordNestedInput
 }
 
 export type UrlUncheckedUpdateManyWithoutSiteInput = {
@@ -1076,6 +1208,7 @@ export type UrlCountOutputType = {
   pageSpeed: number
   audits: number
   geoScores: number
+  indexNowSubmissions: number
 }
 
 export type UrlCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1083,6 +1216,7 @@ export type UrlCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.In
   pageSpeed?: boolean | UrlCountOutputTypeCountPageSpeedArgs
   audits?: boolean | UrlCountOutputTypeCountAuditsArgs
   geoScores?: boolean | UrlCountOutputTypeCountGeoScoresArgs
+  indexNowSubmissions?: boolean | UrlCountOutputTypeCountIndexNowSubmissionsArgs
 }
 
 /**
@@ -1123,6 +1257,13 @@ export type UrlCountOutputTypeCountGeoScoresArgs<ExtArgs extends runtime.Types.E
   where?: Prisma.GeoContentScoreWhereInput
 }
 
+/**
+ * UrlCountOutputType without action
+ */
+export type UrlCountOutputTypeCountIndexNowSubmissionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.IndexNowSubmissionWhereInput
+}
+
 
 export type UrlSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1140,6 +1281,7 @@ export type UrlSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = ru
   pageSpeed?: boolean | Prisma.Url$pageSpeedArgs<ExtArgs>
   audits?: boolean | Prisma.Url$auditsArgs<ExtArgs>
   geoScores?: boolean | Prisma.Url$geoScoresArgs<ExtArgs>
+  indexNowSubmissions?: boolean | Prisma.Url$indexNowSubmissionsArgs<ExtArgs>
   _count?: boolean | Prisma.UrlCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["url"]>
 
@@ -1191,6 +1333,7 @@ export type UrlInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   pageSpeed?: boolean | Prisma.Url$pageSpeedArgs<ExtArgs>
   audits?: boolean | Prisma.Url$auditsArgs<ExtArgs>
   geoScores?: boolean | Prisma.Url$geoScoresArgs<ExtArgs>
+  indexNowSubmissions?: boolean | Prisma.Url$indexNowSubmissionsArgs<ExtArgs>
   _count?: boolean | Prisma.UrlCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UrlIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1208,6 +1351,7 @@ export type $UrlPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
     pageSpeed: Prisma.$PageSpeedResultPayload<ExtArgs>[]
     audits: Prisma.$TechnicalSeoAuditPayload<ExtArgs>[]
     geoScores: Prisma.$GeoContentScorePayload<ExtArgs>[]
+    indexNowSubmissions: Prisma.$IndexNowSubmissionPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1619,6 +1763,7 @@ export interface Prisma__UrlClient<T, Null = never, ExtArgs extends runtime.Type
   pageSpeed<T extends Prisma.Url$pageSpeedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Url$pageSpeedArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PageSpeedResultPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   audits<T extends Prisma.Url$auditsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Url$auditsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TechnicalSeoAuditPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   geoScores<T extends Prisma.Url$geoScoresArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Url$geoScoresArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$GeoContentScorePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  indexNowSubmissions<T extends Prisma.Url$indexNowSubmissionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Url$indexNowSubmissionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$IndexNowSubmissionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2152,6 +2297,30 @@ export type Url$geoScoresArgs<ExtArgs extends runtime.Types.Extensions.InternalA
   take?: number
   skip?: number
   distinct?: Prisma.GeoContentScoreScalarFieldEnum | Prisma.GeoContentScoreScalarFieldEnum[]
+}
+
+/**
+ * Url.indexNowSubmissions
+ */
+export type Url$indexNowSubmissionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the IndexNowSubmission
+   */
+  select?: Prisma.IndexNowSubmissionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the IndexNowSubmission
+   */
+  omit?: Prisma.IndexNowSubmissionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.IndexNowSubmissionInclude<ExtArgs> | null
+  where?: Prisma.IndexNowSubmissionWhereInput
+  orderBy?: Prisma.IndexNowSubmissionOrderByWithRelationInput | Prisma.IndexNowSubmissionOrderByWithRelationInput[]
+  cursor?: Prisma.IndexNowSubmissionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.IndexNowSubmissionScalarFieldEnum | Prisma.IndexNowSubmissionScalarFieldEnum[]
 }
 
 /**

@@ -2,6 +2,7 @@ import { prisma } from "@/lib/db/client";
 import { fetchSitemapUrls, pathFromUrl } from "@/lib/sitemap";
 import { syncGoogleProviders } from "@/lib/providers/google-sync";
 import { runPageSpeedChecks } from "@/lib/providers/pagespeed-sync";
+import { submitIndexNowUrls } from "@/lib/providers/indexnow-sync";
 
 export async function syncSitemap(siteId: string) {
   const site = await prisma.site.findUnique({ where: { id: siteId } });
@@ -33,9 +34,10 @@ export async function syncSite(siteId: string) {
   const site = await prisma.site.findUnique({ where: { id: siteId }, select: { id: true } });
   if (!site) throw new Error("Site not found");
   const sitemap = await syncSitemap(siteId);
-  const [google, pagespeed] = await Promise.all([
+  const [google, pagespeed, indexnow] = await Promise.all([
     syncGoogleProviders(siteId),
     runPageSpeedChecks(siteId),
+    submitIndexNowUrls(siteId),
   ]);
-  return { results: [sitemap, ...google, pagespeed] };
+  return { results: [sitemap, ...google, pagespeed, indexnow] };
 }

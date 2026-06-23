@@ -112,18 +112,19 @@ function buildModuleSummary(section: string, data: ModuleData) {
     ...data.geoTests.map((row) => row.checkedAt),
     ...data.geoScores.map((row) => row.checkedAt),
     ...data.reports.map((row) => row.createdAt),
+    ...data.indexNowSubmissions.map((row) => row.submittedAt),
   ]);
 
   const summaries: Record<string, { value: string; detail: string; ready: boolean; progress: number; items: Array<{ label: string; value: string }> }> = {
     "seo-index": {
-      value: data.indexStatuses.length ? `${indexed}/${data.indexStatuses.length}` : String(data.urls.length || "--"),
-      detail: data.indexStatuses.length ? "来自已保存 GSC 索引检查的已收录 URL" : "已有站点地图 URL 记录，索引检查待执行",
-      ready: data.indexStatuses.length > 0 || data.urls.length > 0,
-      progress: data.indexStatuses.length ? Math.round((indexed / data.indexStatuses.length) * 100) : Math.min(100, data.urls.length * 4),
+      value: data.indexStatuses.length ? `${indexed}/${data.indexStatuses.length}` : data.indexNowSubmissions.length ? String(data.indexNowSubmissions.length) : String(data.urls.length || "--"),
+      detail: data.indexStatuses.length ? "来自已保存 GSC 索引检查的已收录 URL" : data.indexNowSubmissions.length ? "来自 IndexNow 的 URL 提交记录" : "已有站点地图 URL 记录，索引检查待执行",
+      ready: data.indexStatuses.length > 0 || data.indexNowSubmissions.length > 0 || data.urls.length > 0,
+      progress: data.indexStatuses.length ? Math.round((indexed / data.indexStatuses.length) * 100) : data.indexNowSubmissions.length ? 100 : Math.min(100, data.urls.length * 4),
       items: [
         { label: "URL 记录", value: String(data.urls.length || "--") },
         { label: "索引检查", value: String(data.indexStatuses.length || "--") },
-        { label: "最近检查", value: formatDate(latest) },
+        { label: "IndexNow 提交", value: String(data.indexNowSubmissions.length || "--") },
       ],
     },
     keywords: {
@@ -228,8 +229,18 @@ function DataTable({ title, description, urls }: { title: string; description: s
 
 function SeoIndexTable({ data, emptyTitle, emptyDescription }: { data: ModuleData; emptyTitle: string; emptyDescription: string }) {
   const pagination = usePagination(data.indexStatuses);
-  if (data.indexStatuses.length === 0) return <DataTable title={emptyTitle} description={emptyDescription} urls={data.urls} />;
-  return <Panel className="mt-4 overflow-hidden"><TableHeader title="索引覆盖" description="按 URL 保存的 Google 索引检查记录。" count={`${data.indexStatuses.length} 次检查`} /><div className="overflow-x-auto"><table className="w-full min-w-[980px] text-left text-sm"><thead className="bg-[#f8fafb] text-xs uppercase tracking-wide text-slate-400"><tr>{["URL", "结论", "覆盖状态", "索引状态", "Robots", "最近抓取", "检查时间"].map((heading) => <th key={heading} className="px-5 py-3 font-semibold"><GlossaryLabel>{heading}</GlossaryLabel></th>)}</tr></thead><tbody>{pagination.pageItems.map((row) => <tr key={row.id} className="border-t border-[#edf1f2] align-top"><td className="max-w-[320px] truncate px-5 py-4 font-medium">{row.url.url}</td><td className="px-5 py-4"><Badge tone={isPositiveIndexStatus(row.verdict, row.coverageState, row.indexingState) ? "good" : "warn"}>{row.verdict ?? "--"}</Badge></td><td className="px-5 py-4 text-slate-600">{row.coverageState ?? "--"}</td><td className="px-5 py-4 text-slate-600">{row.indexingState ?? "--"}</td><td className="px-5 py-4 text-slate-600">{row.robotsTxtState ?? "--"}</td><td className="px-5 py-4 text-xs text-slate-500">{formatDate(row.lastCrawlTime)}</td><td className="px-5 py-4 text-xs text-slate-500">{formatDate(row.checkedAt)}</td></tr>)}</tbody></table></div><PaginationControls pagination={pagination} /></Panel>;
+  if (data.indexStatuses.length === 0 && data.indexNowSubmissions.length === 0) return <><IndexNowSubmissionTable submissions={data.indexNowSubmissions} /><DataTable title={emptyTitle} description={emptyDescription} urls={data.urls} /></>;
+  return <>
+    {data.indexStatuses.length > 0 ? <Panel className="mt-4 overflow-hidden"><TableHeader title="索引覆盖" description="按 URL 保存的 Google 索引检查记录。" count={`${data.indexStatuses.length} 次检查`} /><div className="overflow-x-auto"><table className="w-full min-w-[980px] text-left text-sm"><thead className="bg-[#f8fafb] text-xs uppercase tracking-wide text-slate-400"><tr>{["URL", "结论", "覆盖状态", "索引状态", "Robots", "最近抓取", "检查时间"].map((heading) => <th key={heading} className="px-5 py-3 font-semibold"><GlossaryLabel>{heading}</GlossaryLabel></th>)}</tr></thead><tbody>{pagination.pageItems.map((row) => <tr key={row.id} className="border-t border-[#edf1f2] align-top"><td className="max-w-[320px] truncate px-5 py-4 font-medium">{row.url.url}</td><td className="px-5 py-4"><Badge tone={isPositiveIndexStatus(row.verdict, row.coverageState, row.indexingState) ? "good" : "warn"}>{row.verdict ?? "--"}</Badge></td><td className="px-5 py-4 text-slate-600">{row.coverageState ?? "--"}</td><td className="px-5 py-4 text-slate-600">{row.indexingState ?? "--"}</td><td className="px-5 py-4 text-slate-600">{row.robotsTxtState ?? "--"}</td><td className="px-5 py-4 text-xs text-slate-500">{formatDate(row.lastCrawlTime)}</td><td className="px-5 py-4 text-xs text-slate-500">{formatDate(row.checkedAt)}</td></tr>)}</tbody></table></div><PaginationControls pagination={pagination} /></Panel> : null}
+    <IndexNowSubmissionTable submissions={data.indexNowSubmissions} />
+    {data.urls.length > 0 ? <DataTable title={emptyTitle} description={emptyDescription} urls={data.urls} /> : null}
+  </>;
+}
+
+function IndexNowSubmissionTable({ submissions }: { submissions: ModuleData["indexNowSubmissions"] }) {
+  const pagination = usePagination(submissions);
+  if (submissions.length === 0) return <Panel className="mt-4 p-6"><EmptyState title="暂无 IndexNow 提交记录" description="在 Bing / IndexNow 集成中保存配置后，点击同步数据或提交 IndexNow，会把站点地图 URL 提交给搜索引擎并在这里记录结果。" /></Panel>;
+  return <Panel className="mt-4 overflow-hidden"><TableHeader title="IndexNow 提交记录" description="提交给 Bing / IndexNow 端点的 URL 和响应状态。" count={`${submissions.length} 条记录`} /><div className="overflow-x-auto"><table className="w-full min-w-[980px] text-left text-sm"><thead className="bg-[#f8fafb] text-xs uppercase tracking-wide text-slate-400"><tr>{["URL", "路径", "状态", "HTTP", "搜索引擎端点", "响应", "提交时间"].map((heading) => <th key={heading} className="px-5 py-3 font-semibold"><GlossaryLabel>{heading}</GlossaryLabel></th>)}</tr></thead><tbody>{pagination.pageItems.map((row) => <tr key={row.id} className="border-t border-[#edf1f2] align-top"><td className="max-w-[320px] truncate px-5 py-4 font-medium">{row.url}</td><td className="px-5 py-4 text-slate-500">{row.urlRecord?.path ?? "--"}</td><td className="px-5 py-4"><Badge tone={row.status === "SUBMITTED" ? "good" : "warn"}>{row.status}</Badge></td><td className="px-5 py-4 text-slate-600">{row.statusCode ?? "--"}</td><td className="max-w-[220px] truncate px-5 py-4 text-slate-500">{row.endpoint}</td><td className="max-w-[280px] truncate px-5 py-4 text-xs text-slate-500">{row.responseText ?? "--"}</td><td className="px-5 py-4 text-xs text-slate-500">{formatDate(row.submittedAt)}</td></tr>)}</tbody></table></div><PaginationControls pagination={pagination} /></Panel>;
 }
 
 function KeywordTable({ data, emptyTitle, emptyDescription }: { data: ModuleData; emptyTitle: string; emptyDescription: string }) {
@@ -462,7 +473,7 @@ function SettingsForm({ site }: { site: SiteSettings | null }) {
         {panel === "google-search-console" ? <IntegrationForm key={`google-search-console-${JSON.stringify(integrations["google-search-console"] ?? {})}`} integration={integrations["google-search-console"]} provider="google-search-console" title="Google Search Console" description="基于 OAuth 或服务账号的 Search Console 和 URL Inspection 访问。" onSubmit={saveIntegration} saving={saving} message={message} fields={gscFields} /> : null}
         {panel === "ga4" ? <IntegrationForm key={`ga4-${JSON.stringify(integrations.ga4 ?? {})}`} integration={integrations.ga4} provider="ga4" title="GA4" description="Analytics 属性、实时指标和转化事件映射。" onSubmit={saveIntegration} saving={saving} message={message} fields={ga4Fields} /> : null}
         {panel === "pagespeed" ? <IntegrationForm key={`pagespeed-${JSON.stringify(integrations.pagespeed ?? {})}`} integration={integrations.pagespeed} provider="pagespeed" title="PageSpeed API" description="移动端和桌面端的 Core Web Vitals 与 Lighthouse 检测。" onSubmit={saveIntegration} saving={saving} message={message} fields={pagespeedFields} /> : null}
-        {panel === "bing-indexnow" ? <IntegrationForm key={`bing-indexnow-${JSON.stringify(integrations["bing-indexnow"] ?? {})}`} integration={integrations["bing-indexnow"]} provider="bing-indexnow" title="Bing / IndexNow" description="Bing Webmaster 和 IndexNow 提交设置。" onSubmit={saveIntegration} saving={saving} message={message} fields={bingFields} /> : null}
+        {panel === "bing-indexnow" ? <IntegrationForm key={`bing-indexnow-${JSON.stringify(integrations["bing-indexnow"] ?? {})}`} integration={integrations["bing-indexnow"]} provider="bing-indexnow" siteId={site?.id} title="Bing / IndexNow" description="Bing Webmaster 和 IndexNow 提交设置。" onSubmit={saveIntegration} saving={saving} message={message} fields={bingFields} /> : null}
         {panel === "ai-search" ? <IntegrationForm key={`ai-search-${JSON.stringify(integrations["ai-search"] ?? {})}`} integration={integrations["ai-search"]} provider="ai-search" title="AI 搜索服务商" description="用于 AI 可见度测试的服务商适配配置。" onSubmit={saveIntegration} saving={saving} message={message} fields={aiFields} /> : null}
         {panel === "logs" ? <IntegrationForm key={`logs-${JSON.stringify(integrations.logs ?? {})}`} integration={integrations.logs} provider="logs" title="日志" description="访问日志上传、挂载目录、Cloudflare 或 Webhook 配置。" onSubmit={saveIntegration} saving={saving} message={message} fields={logFields} /> : null}
         {panel === "alerts" ? <IntegrationForm key={`alerts-${JSON.stringify(integrations.alerts ?? {})}`} integration={integrations.alerts} provider="alerts" title="告警" description="邮件和 Webhook 告警渠道，以及严重程度阈值。" onSubmit={saveIntegration} saving={saving} message={message} fields={alertFields} /> : null}
@@ -564,11 +575,11 @@ function SectionTitle({ title, description }: { title: string; description: stri
   return <div><h3 className="text-lg font-semibold"><GlossaryLabel>{title}</GlossaryLabel></h3><p className="mt-1 text-sm text-slate-500">{description}</p></div>;
 }
 
-function IntegrationForm({ provider, title, description, fields, onSubmit, saving, message, integration }: { provider: string; title: string; description: string; fields: Field[]; onSubmit: (event: FormEvent<HTMLFormElement>, provider: string) => void; saving: boolean; message: string | null; integration?: IntegrationState }) {
+function IntegrationForm({ provider, siteId, title, description, fields, onSubmit, saving, message, integration }: { provider: string; siteId?: string; title: string; description: string; fields: Field[]; onSubmit: (event: FormEvent<HTMLFormElement>, provider: string) => void; saving: boolean; message: string | null; integration?: IntegrationState }) {
   return <form onSubmit={(event) => onSubmit(event, provider)}><SectionTitle title={title} description={description} /><IntegrationStatus integration={integration} /><div className="mt-6 grid gap-5 md:grid-cols-2">{fields.map((field) => {
     const hasSavedSensitiveValue = field.sensitive && integration?.savedSensitiveFields[field.name];
     return <Input key={field.name} label={field.label} name={field.name} type={field.type ?? "text"} defaultValue={field.sensitive ? "" : integration?.config[field.name] ?? ""} placeholder={hasSavedSensitiveValue ? "已安全保存，留空则保留现有值。" : field.placeholder} />;
-  })}</div><SaveBar saving={saving} message={message} /></form>;
+  })}</div>{provider === "bing-indexnow" && siteId ? <div className="mt-5 flex justify-start"><SiteActionButton siteId={siteId} action="indexnow" variant="outline">提交 IndexNow</SiteActionButton></div> : null}<SaveBar saving={saving} message={message} /></form>;
 }
 
 function IntegrationStatus({ integration }: { integration?: IntegrationState }) {

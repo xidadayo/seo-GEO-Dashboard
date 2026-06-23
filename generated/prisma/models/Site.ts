@@ -255,6 +255,7 @@ export type SiteWhereInput = {
   alerts?: Prisma.AlertListRelationFilter
   reports?: Prisma.ReportListRelationFilter
   shareLinks?: Prisma.ShareLinkListRelationFilter
+  indexNowSubmissions?: Prisma.IndexNowSubmissionListRelationFilter
 }
 
 export type SiteOrderByWithRelationInput = {
@@ -287,6 +288,7 @@ export type SiteOrderByWithRelationInput = {
   alerts?: Prisma.AlertOrderByRelationAggregateInput
   reports?: Prisma.ReportOrderByRelationAggregateInput
   shareLinks?: Prisma.ShareLinkOrderByRelationAggregateInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionOrderByRelationAggregateInput
 }
 
 export type SiteWhereUniqueInput = Prisma.AtLeast<{
@@ -323,6 +325,7 @@ export type SiteWhereUniqueInput = Prisma.AtLeast<{
   alerts?: Prisma.AlertListRelationFilter
   reports?: Prisma.ReportListRelationFilter
   shareLinks?: Prisma.ShareLinkListRelationFilter
+  indexNowSubmissions?: Prisma.IndexNowSubmissionListRelationFilter
 }, "id" | "workspaceId_domain">
 
 export type SiteOrderByWithAggregationInput = {
@@ -390,6 +393,7 @@ export type SiteCreateInput = {
   alerts?: Prisma.AlertCreateNestedManyWithoutSiteInput
   reports?: Prisma.ReportCreateNestedManyWithoutSiteInput
   shareLinks?: Prisma.ShareLinkCreateNestedManyWithoutSiteInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionCreateNestedManyWithoutSiteInput
 }
 
 export type SiteUncheckedCreateInput = {
@@ -421,6 +425,7 @@ export type SiteUncheckedCreateInput = {
   alerts?: Prisma.AlertUncheckedCreateNestedManyWithoutSiteInput
   reports?: Prisma.ReportUncheckedCreateNestedManyWithoutSiteInput
   shareLinks?: Prisma.ShareLinkUncheckedCreateNestedManyWithoutSiteInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionUncheckedCreateNestedManyWithoutSiteInput
 }
 
 export type SiteUpdateInput = {
@@ -452,6 +457,7 @@ export type SiteUpdateInput = {
   alerts?: Prisma.AlertUpdateManyWithoutSiteNestedInput
   reports?: Prisma.ReportUpdateManyWithoutSiteNestedInput
   shareLinks?: Prisma.ShareLinkUpdateManyWithoutSiteNestedInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionUpdateManyWithoutSiteNestedInput
 }
 
 export type SiteUncheckedUpdateInput = {
@@ -483,6 +489,7 @@ export type SiteUncheckedUpdateInput = {
   alerts?: Prisma.AlertUncheckedUpdateManyWithoutSiteNestedInput
   reports?: Prisma.ReportUncheckedUpdateManyWithoutSiteNestedInput
   shareLinks?: Prisma.ShareLinkUncheckedUpdateManyWithoutSiteNestedInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionUncheckedUpdateManyWithoutSiteNestedInput
 }
 
 export type SiteCreateManyInput = {
@@ -733,6 +740,20 @@ export type SiteUpdateOneRequiredWithoutIndexStatusesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.SiteUpdateToOneWithWhereWithoutIndexStatusesInput, Prisma.SiteUpdateWithoutIndexStatusesInput>, Prisma.SiteUncheckedUpdateWithoutIndexStatusesInput>
 }
 
+export type SiteCreateNestedOneWithoutIndexNowSubmissionsInput = {
+  create?: Prisma.XOR<Prisma.SiteCreateWithoutIndexNowSubmissionsInput, Prisma.SiteUncheckedCreateWithoutIndexNowSubmissionsInput>
+  connectOrCreate?: Prisma.SiteCreateOrConnectWithoutIndexNowSubmissionsInput
+  connect?: Prisma.SiteWhereUniqueInput
+}
+
+export type SiteUpdateOneRequiredWithoutIndexNowSubmissionsNestedInput = {
+  create?: Prisma.XOR<Prisma.SiteCreateWithoutIndexNowSubmissionsInput, Prisma.SiteUncheckedCreateWithoutIndexNowSubmissionsInput>
+  connectOrCreate?: Prisma.SiteCreateOrConnectWithoutIndexNowSubmissionsInput
+  upsert?: Prisma.SiteUpsertWithoutIndexNowSubmissionsInput
+  connect?: Prisma.SiteWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.SiteUpdateToOneWithWhereWithoutIndexNowSubmissionsInput, Prisma.SiteUpdateWithoutIndexNowSubmissionsInput>, Prisma.SiteUncheckedUpdateWithoutIndexNowSubmissionsInput>
+}
+
 export type SiteCreateNestedOneWithoutDailyTrafficInput = {
   create?: Prisma.XOR<Prisma.SiteCreateWithoutDailyTrafficInput, Prisma.SiteUncheckedCreateWithoutDailyTrafficInput>
   connectOrCreate?: Prisma.SiteCreateOrConnectWithoutDailyTrafficInput
@@ -903,6 +924,7 @@ export type SiteCreateWithoutWorkspaceInput = {
   alerts?: Prisma.AlertCreateNestedManyWithoutSiteInput
   reports?: Prisma.ReportCreateNestedManyWithoutSiteInput
   shareLinks?: Prisma.ShareLinkCreateNestedManyWithoutSiteInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionCreateNestedManyWithoutSiteInput
 }
 
 export type SiteUncheckedCreateWithoutWorkspaceInput = {
@@ -933,6 +955,7 @@ export type SiteUncheckedCreateWithoutWorkspaceInput = {
   alerts?: Prisma.AlertUncheckedCreateNestedManyWithoutSiteInput
   reports?: Prisma.ReportUncheckedCreateNestedManyWithoutSiteInput
   shareLinks?: Prisma.ShareLinkUncheckedCreateNestedManyWithoutSiteInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionUncheckedCreateNestedManyWithoutSiteInput
 }
 
 export type SiteCreateOrConnectWithoutWorkspaceInput = {
@@ -1007,6 +1030,7 @@ export type SiteCreateWithoutBrandTermsInput = {
   alerts?: Prisma.AlertCreateNestedManyWithoutSiteInput
   reports?: Prisma.ReportCreateNestedManyWithoutSiteInput
   shareLinks?: Prisma.ShareLinkCreateNestedManyWithoutSiteInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionCreateNestedManyWithoutSiteInput
 }
 
 export type SiteUncheckedCreateWithoutBrandTermsInput = {
@@ -1037,6 +1061,7 @@ export type SiteUncheckedCreateWithoutBrandTermsInput = {
   alerts?: Prisma.AlertUncheckedCreateNestedManyWithoutSiteInput
   reports?: Prisma.ReportUncheckedCreateNestedManyWithoutSiteInput
   shareLinks?: Prisma.ShareLinkUncheckedCreateNestedManyWithoutSiteInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionUncheckedCreateNestedManyWithoutSiteInput
 }
 
 export type SiteCreateOrConnectWithoutBrandTermsInput = {
@@ -1083,6 +1108,7 @@ export type SiteUpdateWithoutBrandTermsInput = {
   alerts?: Prisma.AlertUpdateManyWithoutSiteNestedInput
   reports?: Prisma.ReportUpdateManyWithoutSiteNestedInput
   shareLinks?: Prisma.ShareLinkUpdateManyWithoutSiteNestedInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionUpdateManyWithoutSiteNestedInput
 }
 
 export type SiteUncheckedUpdateWithoutBrandTermsInput = {
@@ -1113,6 +1139,7 @@ export type SiteUncheckedUpdateWithoutBrandTermsInput = {
   alerts?: Prisma.AlertUncheckedUpdateManyWithoutSiteNestedInput
   reports?: Prisma.ReportUncheckedUpdateManyWithoutSiteNestedInput
   shareLinks?: Prisma.ShareLinkUncheckedUpdateManyWithoutSiteNestedInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionUncheckedUpdateManyWithoutSiteNestedInput
 }
 
 export type SiteCreateWithoutKeywordsInput = {
@@ -1143,6 +1170,7 @@ export type SiteCreateWithoutKeywordsInput = {
   alerts?: Prisma.AlertCreateNestedManyWithoutSiteInput
   reports?: Prisma.ReportCreateNestedManyWithoutSiteInput
   shareLinks?: Prisma.ShareLinkCreateNestedManyWithoutSiteInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionCreateNestedManyWithoutSiteInput
 }
 
 export type SiteUncheckedCreateWithoutKeywordsInput = {
@@ -1173,6 +1201,7 @@ export type SiteUncheckedCreateWithoutKeywordsInput = {
   alerts?: Prisma.AlertUncheckedCreateNestedManyWithoutSiteInput
   reports?: Prisma.ReportUncheckedCreateNestedManyWithoutSiteInput
   shareLinks?: Prisma.ShareLinkUncheckedCreateNestedManyWithoutSiteInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionUncheckedCreateNestedManyWithoutSiteInput
 }
 
 export type SiteCreateOrConnectWithoutKeywordsInput = {
@@ -1219,6 +1248,7 @@ export type SiteUpdateWithoutKeywordsInput = {
   alerts?: Prisma.AlertUpdateManyWithoutSiteNestedInput
   reports?: Prisma.ReportUpdateManyWithoutSiteNestedInput
   shareLinks?: Prisma.ShareLinkUpdateManyWithoutSiteNestedInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionUpdateManyWithoutSiteNestedInput
 }
 
 export type SiteUncheckedUpdateWithoutKeywordsInput = {
@@ -1249,6 +1279,7 @@ export type SiteUncheckedUpdateWithoutKeywordsInput = {
   alerts?: Prisma.AlertUncheckedUpdateManyWithoutSiteNestedInput
   reports?: Prisma.ReportUncheckedUpdateManyWithoutSiteNestedInput
   shareLinks?: Prisma.ShareLinkUncheckedUpdateManyWithoutSiteNestedInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionUncheckedUpdateManyWithoutSiteNestedInput
 }
 
 export type SiteCreateWithoutIntegrationsInput = {
@@ -1279,6 +1310,7 @@ export type SiteCreateWithoutIntegrationsInput = {
   alerts?: Prisma.AlertCreateNestedManyWithoutSiteInput
   reports?: Prisma.ReportCreateNestedManyWithoutSiteInput
   shareLinks?: Prisma.ShareLinkCreateNestedManyWithoutSiteInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionCreateNestedManyWithoutSiteInput
 }
 
 export type SiteUncheckedCreateWithoutIntegrationsInput = {
@@ -1309,6 +1341,7 @@ export type SiteUncheckedCreateWithoutIntegrationsInput = {
   alerts?: Prisma.AlertUncheckedCreateNestedManyWithoutSiteInput
   reports?: Prisma.ReportUncheckedCreateNestedManyWithoutSiteInput
   shareLinks?: Prisma.ShareLinkUncheckedCreateNestedManyWithoutSiteInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionUncheckedCreateNestedManyWithoutSiteInput
 }
 
 export type SiteCreateOrConnectWithoutIntegrationsInput = {
@@ -1355,6 +1388,7 @@ export type SiteUpdateWithoutIntegrationsInput = {
   alerts?: Prisma.AlertUpdateManyWithoutSiteNestedInput
   reports?: Prisma.ReportUpdateManyWithoutSiteNestedInput
   shareLinks?: Prisma.ShareLinkUpdateManyWithoutSiteNestedInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionUpdateManyWithoutSiteNestedInput
 }
 
 export type SiteUncheckedUpdateWithoutIntegrationsInput = {
@@ -1385,6 +1419,7 @@ export type SiteUncheckedUpdateWithoutIntegrationsInput = {
   alerts?: Prisma.AlertUncheckedUpdateManyWithoutSiteNestedInput
   reports?: Prisma.ReportUncheckedUpdateManyWithoutSiteNestedInput
   shareLinks?: Prisma.ShareLinkUncheckedUpdateManyWithoutSiteNestedInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionUncheckedUpdateManyWithoutSiteNestedInput
 }
 
 export type SiteCreateWithoutUrlsInput = {
@@ -1415,6 +1450,7 @@ export type SiteCreateWithoutUrlsInput = {
   alerts?: Prisma.AlertCreateNestedManyWithoutSiteInput
   reports?: Prisma.ReportCreateNestedManyWithoutSiteInput
   shareLinks?: Prisma.ShareLinkCreateNestedManyWithoutSiteInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionCreateNestedManyWithoutSiteInput
 }
 
 export type SiteUncheckedCreateWithoutUrlsInput = {
@@ -1445,6 +1481,7 @@ export type SiteUncheckedCreateWithoutUrlsInput = {
   alerts?: Prisma.AlertUncheckedCreateNestedManyWithoutSiteInput
   reports?: Prisma.ReportUncheckedCreateNestedManyWithoutSiteInput
   shareLinks?: Prisma.ShareLinkUncheckedCreateNestedManyWithoutSiteInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionUncheckedCreateNestedManyWithoutSiteInput
 }
 
 export type SiteCreateOrConnectWithoutUrlsInput = {
@@ -1491,6 +1528,7 @@ export type SiteUpdateWithoutUrlsInput = {
   alerts?: Prisma.AlertUpdateManyWithoutSiteNestedInput
   reports?: Prisma.ReportUpdateManyWithoutSiteNestedInput
   shareLinks?: Prisma.ShareLinkUpdateManyWithoutSiteNestedInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionUpdateManyWithoutSiteNestedInput
 }
 
 export type SiteUncheckedUpdateWithoutUrlsInput = {
@@ -1521,6 +1559,7 @@ export type SiteUncheckedUpdateWithoutUrlsInput = {
   alerts?: Prisma.AlertUncheckedUpdateManyWithoutSiteNestedInput
   reports?: Prisma.ReportUncheckedUpdateManyWithoutSiteNestedInput
   shareLinks?: Prisma.ShareLinkUncheckedUpdateManyWithoutSiteNestedInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionUncheckedUpdateManyWithoutSiteNestedInput
 }
 
 export type SiteCreateWithoutSearchPerformanceInput = {
@@ -1551,6 +1590,7 @@ export type SiteCreateWithoutSearchPerformanceInput = {
   alerts?: Prisma.AlertCreateNestedManyWithoutSiteInput
   reports?: Prisma.ReportCreateNestedManyWithoutSiteInput
   shareLinks?: Prisma.ShareLinkCreateNestedManyWithoutSiteInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionCreateNestedManyWithoutSiteInput
 }
 
 export type SiteUncheckedCreateWithoutSearchPerformanceInput = {
@@ -1581,6 +1621,7 @@ export type SiteUncheckedCreateWithoutSearchPerformanceInput = {
   alerts?: Prisma.AlertUncheckedCreateNestedManyWithoutSiteInput
   reports?: Prisma.ReportUncheckedCreateNestedManyWithoutSiteInput
   shareLinks?: Prisma.ShareLinkUncheckedCreateNestedManyWithoutSiteInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionUncheckedCreateNestedManyWithoutSiteInput
 }
 
 export type SiteCreateOrConnectWithoutSearchPerformanceInput = {
@@ -1627,6 +1668,7 @@ export type SiteUpdateWithoutSearchPerformanceInput = {
   alerts?: Prisma.AlertUpdateManyWithoutSiteNestedInput
   reports?: Prisma.ReportUpdateManyWithoutSiteNestedInput
   shareLinks?: Prisma.ShareLinkUpdateManyWithoutSiteNestedInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionUpdateManyWithoutSiteNestedInput
 }
 
 export type SiteUncheckedUpdateWithoutSearchPerformanceInput = {
@@ -1657,6 +1699,7 @@ export type SiteUncheckedUpdateWithoutSearchPerformanceInput = {
   alerts?: Prisma.AlertUncheckedUpdateManyWithoutSiteNestedInput
   reports?: Prisma.ReportUncheckedUpdateManyWithoutSiteNestedInput
   shareLinks?: Prisma.ShareLinkUncheckedUpdateManyWithoutSiteNestedInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionUncheckedUpdateManyWithoutSiteNestedInput
 }
 
 export type SiteCreateWithoutIndexStatusesInput = {
@@ -1687,6 +1730,7 @@ export type SiteCreateWithoutIndexStatusesInput = {
   alerts?: Prisma.AlertCreateNestedManyWithoutSiteInput
   reports?: Prisma.ReportCreateNestedManyWithoutSiteInput
   shareLinks?: Prisma.ShareLinkCreateNestedManyWithoutSiteInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionCreateNestedManyWithoutSiteInput
 }
 
 export type SiteUncheckedCreateWithoutIndexStatusesInput = {
@@ -1717,6 +1761,7 @@ export type SiteUncheckedCreateWithoutIndexStatusesInput = {
   alerts?: Prisma.AlertUncheckedCreateNestedManyWithoutSiteInput
   reports?: Prisma.ReportUncheckedCreateNestedManyWithoutSiteInput
   shareLinks?: Prisma.ShareLinkUncheckedCreateNestedManyWithoutSiteInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionUncheckedCreateNestedManyWithoutSiteInput
 }
 
 export type SiteCreateOrConnectWithoutIndexStatusesInput = {
@@ -1763,6 +1808,7 @@ export type SiteUpdateWithoutIndexStatusesInput = {
   alerts?: Prisma.AlertUpdateManyWithoutSiteNestedInput
   reports?: Prisma.ReportUpdateManyWithoutSiteNestedInput
   shareLinks?: Prisma.ShareLinkUpdateManyWithoutSiteNestedInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionUpdateManyWithoutSiteNestedInput
 }
 
 export type SiteUncheckedUpdateWithoutIndexStatusesInput = {
@@ -1783,6 +1829,147 @@ export type SiteUncheckedUpdateWithoutIndexStatusesInput = {
   integrations?: Prisma.IntegrationUncheckedUpdateManyWithoutSiteNestedInput
   urls?: Prisma.UrlUncheckedUpdateManyWithoutSiteNestedInput
   searchPerformance?: Prisma.GscSearchPerformanceUncheckedUpdateManyWithoutSiteNestedInput
+  dailyTraffic?: Prisma.Ga4DailyTrafficUncheckedUpdateManyWithoutSiteNestedInput
+  realtime?: Prisma.Ga4RealtimeSnapshotUncheckedUpdateManyWithoutSiteNestedInput
+  pageSpeed?: Prisma.PageSpeedResultUncheckedUpdateManyWithoutSiteNestedInput
+  audits?: Prisma.TechnicalSeoAuditUncheckedUpdateManyWithoutSiteNestedInput
+  botLogs?: Prisma.AiBotLogUncheckedUpdateManyWithoutSiteNestedInput
+  geoTests?: Prisma.GeoQueryTestUncheckedUpdateManyWithoutSiteNestedInput
+  geoScores?: Prisma.GeoContentScoreUncheckedUpdateManyWithoutSiteNestedInput
+  alerts?: Prisma.AlertUncheckedUpdateManyWithoutSiteNestedInput
+  reports?: Prisma.ReportUncheckedUpdateManyWithoutSiteNestedInput
+  shareLinks?: Prisma.ShareLinkUncheckedUpdateManyWithoutSiteNestedInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionUncheckedUpdateManyWithoutSiteNestedInput
+}
+
+export type SiteCreateWithoutIndexNowSubmissionsInput = {
+  id?: string
+  name: string
+  domain: string
+  primaryUrl: string
+  sitemapUrl?: string | null
+  robotsUrl?: string | null
+  wordpressApiUrl?: string | null
+  timezone?: string
+  status?: $Enums.SiteStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  workspace: Prisma.WorkspaceCreateNestedOneWithoutSitesInput
+  brandTerms?: Prisma.SiteBrandTermCreateNestedManyWithoutSiteInput
+  keywords?: Prisma.SiteKeywordCreateNestedManyWithoutSiteInput
+  integrations?: Prisma.IntegrationCreateNestedManyWithoutSiteInput
+  urls?: Prisma.UrlCreateNestedManyWithoutSiteInput
+  searchPerformance?: Prisma.GscSearchPerformanceCreateNestedManyWithoutSiteInput
+  indexStatuses?: Prisma.GscIndexStatusCreateNestedManyWithoutSiteInput
+  dailyTraffic?: Prisma.Ga4DailyTrafficCreateNestedManyWithoutSiteInput
+  realtime?: Prisma.Ga4RealtimeSnapshotCreateNestedManyWithoutSiteInput
+  pageSpeed?: Prisma.PageSpeedResultCreateNestedManyWithoutSiteInput
+  audits?: Prisma.TechnicalSeoAuditCreateNestedManyWithoutSiteInput
+  botLogs?: Prisma.AiBotLogCreateNestedManyWithoutSiteInput
+  geoTests?: Prisma.GeoQueryTestCreateNestedManyWithoutSiteInput
+  geoScores?: Prisma.GeoContentScoreCreateNestedManyWithoutSiteInput
+  alerts?: Prisma.AlertCreateNestedManyWithoutSiteInput
+  reports?: Prisma.ReportCreateNestedManyWithoutSiteInput
+  shareLinks?: Prisma.ShareLinkCreateNestedManyWithoutSiteInput
+}
+
+export type SiteUncheckedCreateWithoutIndexNowSubmissionsInput = {
+  id?: string
+  workspaceId: string
+  name: string
+  domain: string
+  primaryUrl: string
+  sitemapUrl?: string | null
+  robotsUrl?: string | null
+  wordpressApiUrl?: string | null
+  timezone?: string
+  status?: $Enums.SiteStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  brandTerms?: Prisma.SiteBrandTermUncheckedCreateNestedManyWithoutSiteInput
+  keywords?: Prisma.SiteKeywordUncheckedCreateNestedManyWithoutSiteInput
+  integrations?: Prisma.IntegrationUncheckedCreateNestedManyWithoutSiteInput
+  urls?: Prisma.UrlUncheckedCreateNestedManyWithoutSiteInput
+  searchPerformance?: Prisma.GscSearchPerformanceUncheckedCreateNestedManyWithoutSiteInput
+  indexStatuses?: Prisma.GscIndexStatusUncheckedCreateNestedManyWithoutSiteInput
+  dailyTraffic?: Prisma.Ga4DailyTrafficUncheckedCreateNestedManyWithoutSiteInput
+  realtime?: Prisma.Ga4RealtimeSnapshotUncheckedCreateNestedManyWithoutSiteInput
+  pageSpeed?: Prisma.PageSpeedResultUncheckedCreateNestedManyWithoutSiteInput
+  audits?: Prisma.TechnicalSeoAuditUncheckedCreateNestedManyWithoutSiteInput
+  botLogs?: Prisma.AiBotLogUncheckedCreateNestedManyWithoutSiteInput
+  geoTests?: Prisma.GeoQueryTestUncheckedCreateNestedManyWithoutSiteInput
+  geoScores?: Prisma.GeoContentScoreUncheckedCreateNestedManyWithoutSiteInput
+  alerts?: Prisma.AlertUncheckedCreateNestedManyWithoutSiteInput
+  reports?: Prisma.ReportUncheckedCreateNestedManyWithoutSiteInput
+  shareLinks?: Prisma.ShareLinkUncheckedCreateNestedManyWithoutSiteInput
+}
+
+export type SiteCreateOrConnectWithoutIndexNowSubmissionsInput = {
+  where: Prisma.SiteWhereUniqueInput
+  create: Prisma.XOR<Prisma.SiteCreateWithoutIndexNowSubmissionsInput, Prisma.SiteUncheckedCreateWithoutIndexNowSubmissionsInput>
+}
+
+export type SiteUpsertWithoutIndexNowSubmissionsInput = {
+  update: Prisma.XOR<Prisma.SiteUpdateWithoutIndexNowSubmissionsInput, Prisma.SiteUncheckedUpdateWithoutIndexNowSubmissionsInput>
+  create: Prisma.XOR<Prisma.SiteCreateWithoutIndexNowSubmissionsInput, Prisma.SiteUncheckedCreateWithoutIndexNowSubmissionsInput>
+  where?: Prisma.SiteWhereInput
+}
+
+export type SiteUpdateToOneWithWhereWithoutIndexNowSubmissionsInput = {
+  where?: Prisma.SiteWhereInput
+  data: Prisma.XOR<Prisma.SiteUpdateWithoutIndexNowSubmissionsInput, Prisma.SiteUncheckedUpdateWithoutIndexNowSubmissionsInput>
+}
+
+export type SiteUpdateWithoutIndexNowSubmissionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  domain?: Prisma.StringFieldUpdateOperationsInput | string
+  primaryUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  sitemapUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  robotsUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressApiUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumSiteStatusFieldUpdateOperationsInput | $Enums.SiteStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutSitesNestedInput
+  brandTerms?: Prisma.SiteBrandTermUpdateManyWithoutSiteNestedInput
+  keywords?: Prisma.SiteKeywordUpdateManyWithoutSiteNestedInput
+  integrations?: Prisma.IntegrationUpdateManyWithoutSiteNestedInput
+  urls?: Prisma.UrlUpdateManyWithoutSiteNestedInput
+  searchPerformance?: Prisma.GscSearchPerformanceUpdateManyWithoutSiteNestedInput
+  indexStatuses?: Prisma.GscIndexStatusUpdateManyWithoutSiteNestedInput
+  dailyTraffic?: Prisma.Ga4DailyTrafficUpdateManyWithoutSiteNestedInput
+  realtime?: Prisma.Ga4RealtimeSnapshotUpdateManyWithoutSiteNestedInput
+  pageSpeed?: Prisma.PageSpeedResultUpdateManyWithoutSiteNestedInput
+  audits?: Prisma.TechnicalSeoAuditUpdateManyWithoutSiteNestedInput
+  botLogs?: Prisma.AiBotLogUpdateManyWithoutSiteNestedInput
+  geoTests?: Prisma.GeoQueryTestUpdateManyWithoutSiteNestedInput
+  geoScores?: Prisma.GeoContentScoreUpdateManyWithoutSiteNestedInput
+  alerts?: Prisma.AlertUpdateManyWithoutSiteNestedInput
+  reports?: Prisma.ReportUpdateManyWithoutSiteNestedInput
+  shareLinks?: Prisma.ShareLinkUpdateManyWithoutSiteNestedInput
+}
+
+export type SiteUncheckedUpdateWithoutIndexNowSubmissionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  domain?: Prisma.StringFieldUpdateOperationsInput | string
+  primaryUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  sitemapUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  robotsUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordpressApiUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumSiteStatusFieldUpdateOperationsInput | $Enums.SiteStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  brandTerms?: Prisma.SiteBrandTermUncheckedUpdateManyWithoutSiteNestedInput
+  keywords?: Prisma.SiteKeywordUncheckedUpdateManyWithoutSiteNestedInput
+  integrations?: Prisma.IntegrationUncheckedUpdateManyWithoutSiteNestedInput
+  urls?: Prisma.UrlUncheckedUpdateManyWithoutSiteNestedInput
+  searchPerformance?: Prisma.GscSearchPerformanceUncheckedUpdateManyWithoutSiteNestedInput
+  indexStatuses?: Prisma.GscIndexStatusUncheckedUpdateManyWithoutSiteNestedInput
   dailyTraffic?: Prisma.Ga4DailyTrafficUncheckedUpdateManyWithoutSiteNestedInput
   realtime?: Prisma.Ga4RealtimeSnapshotUncheckedUpdateManyWithoutSiteNestedInput
   pageSpeed?: Prisma.PageSpeedResultUncheckedUpdateManyWithoutSiteNestedInput
@@ -1823,6 +2010,7 @@ export type SiteCreateWithoutDailyTrafficInput = {
   alerts?: Prisma.AlertCreateNestedManyWithoutSiteInput
   reports?: Prisma.ReportCreateNestedManyWithoutSiteInput
   shareLinks?: Prisma.ShareLinkCreateNestedManyWithoutSiteInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionCreateNestedManyWithoutSiteInput
 }
 
 export type SiteUncheckedCreateWithoutDailyTrafficInput = {
@@ -1853,6 +2041,7 @@ export type SiteUncheckedCreateWithoutDailyTrafficInput = {
   alerts?: Prisma.AlertUncheckedCreateNestedManyWithoutSiteInput
   reports?: Prisma.ReportUncheckedCreateNestedManyWithoutSiteInput
   shareLinks?: Prisma.ShareLinkUncheckedCreateNestedManyWithoutSiteInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionUncheckedCreateNestedManyWithoutSiteInput
 }
 
 export type SiteCreateOrConnectWithoutDailyTrafficInput = {
@@ -1899,6 +2088,7 @@ export type SiteUpdateWithoutDailyTrafficInput = {
   alerts?: Prisma.AlertUpdateManyWithoutSiteNestedInput
   reports?: Prisma.ReportUpdateManyWithoutSiteNestedInput
   shareLinks?: Prisma.ShareLinkUpdateManyWithoutSiteNestedInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionUpdateManyWithoutSiteNestedInput
 }
 
 export type SiteUncheckedUpdateWithoutDailyTrafficInput = {
@@ -1929,6 +2119,7 @@ export type SiteUncheckedUpdateWithoutDailyTrafficInput = {
   alerts?: Prisma.AlertUncheckedUpdateManyWithoutSiteNestedInput
   reports?: Prisma.ReportUncheckedUpdateManyWithoutSiteNestedInput
   shareLinks?: Prisma.ShareLinkUncheckedUpdateManyWithoutSiteNestedInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionUncheckedUpdateManyWithoutSiteNestedInput
 }
 
 export type SiteCreateWithoutRealtimeInput = {
@@ -1959,6 +2150,7 @@ export type SiteCreateWithoutRealtimeInput = {
   alerts?: Prisma.AlertCreateNestedManyWithoutSiteInput
   reports?: Prisma.ReportCreateNestedManyWithoutSiteInput
   shareLinks?: Prisma.ShareLinkCreateNestedManyWithoutSiteInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionCreateNestedManyWithoutSiteInput
 }
 
 export type SiteUncheckedCreateWithoutRealtimeInput = {
@@ -1989,6 +2181,7 @@ export type SiteUncheckedCreateWithoutRealtimeInput = {
   alerts?: Prisma.AlertUncheckedCreateNestedManyWithoutSiteInput
   reports?: Prisma.ReportUncheckedCreateNestedManyWithoutSiteInput
   shareLinks?: Prisma.ShareLinkUncheckedCreateNestedManyWithoutSiteInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionUncheckedCreateNestedManyWithoutSiteInput
 }
 
 export type SiteCreateOrConnectWithoutRealtimeInput = {
@@ -2035,6 +2228,7 @@ export type SiteUpdateWithoutRealtimeInput = {
   alerts?: Prisma.AlertUpdateManyWithoutSiteNestedInput
   reports?: Prisma.ReportUpdateManyWithoutSiteNestedInput
   shareLinks?: Prisma.ShareLinkUpdateManyWithoutSiteNestedInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionUpdateManyWithoutSiteNestedInput
 }
 
 export type SiteUncheckedUpdateWithoutRealtimeInput = {
@@ -2065,6 +2259,7 @@ export type SiteUncheckedUpdateWithoutRealtimeInput = {
   alerts?: Prisma.AlertUncheckedUpdateManyWithoutSiteNestedInput
   reports?: Prisma.ReportUncheckedUpdateManyWithoutSiteNestedInput
   shareLinks?: Prisma.ShareLinkUncheckedUpdateManyWithoutSiteNestedInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionUncheckedUpdateManyWithoutSiteNestedInput
 }
 
 export type SiteCreateWithoutPageSpeedInput = {
@@ -2095,6 +2290,7 @@ export type SiteCreateWithoutPageSpeedInput = {
   alerts?: Prisma.AlertCreateNestedManyWithoutSiteInput
   reports?: Prisma.ReportCreateNestedManyWithoutSiteInput
   shareLinks?: Prisma.ShareLinkCreateNestedManyWithoutSiteInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionCreateNestedManyWithoutSiteInput
 }
 
 export type SiteUncheckedCreateWithoutPageSpeedInput = {
@@ -2125,6 +2321,7 @@ export type SiteUncheckedCreateWithoutPageSpeedInput = {
   alerts?: Prisma.AlertUncheckedCreateNestedManyWithoutSiteInput
   reports?: Prisma.ReportUncheckedCreateNestedManyWithoutSiteInput
   shareLinks?: Prisma.ShareLinkUncheckedCreateNestedManyWithoutSiteInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionUncheckedCreateNestedManyWithoutSiteInput
 }
 
 export type SiteCreateOrConnectWithoutPageSpeedInput = {
@@ -2171,6 +2368,7 @@ export type SiteUpdateWithoutPageSpeedInput = {
   alerts?: Prisma.AlertUpdateManyWithoutSiteNestedInput
   reports?: Prisma.ReportUpdateManyWithoutSiteNestedInput
   shareLinks?: Prisma.ShareLinkUpdateManyWithoutSiteNestedInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionUpdateManyWithoutSiteNestedInput
 }
 
 export type SiteUncheckedUpdateWithoutPageSpeedInput = {
@@ -2201,6 +2399,7 @@ export type SiteUncheckedUpdateWithoutPageSpeedInput = {
   alerts?: Prisma.AlertUncheckedUpdateManyWithoutSiteNestedInput
   reports?: Prisma.ReportUncheckedUpdateManyWithoutSiteNestedInput
   shareLinks?: Prisma.ShareLinkUncheckedUpdateManyWithoutSiteNestedInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionUncheckedUpdateManyWithoutSiteNestedInput
 }
 
 export type SiteCreateWithoutAuditsInput = {
@@ -2231,6 +2430,7 @@ export type SiteCreateWithoutAuditsInput = {
   alerts?: Prisma.AlertCreateNestedManyWithoutSiteInput
   reports?: Prisma.ReportCreateNestedManyWithoutSiteInput
   shareLinks?: Prisma.ShareLinkCreateNestedManyWithoutSiteInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionCreateNestedManyWithoutSiteInput
 }
 
 export type SiteUncheckedCreateWithoutAuditsInput = {
@@ -2261,6 +2461,7 @@ export type SiteUncheckedCreateWithoutAuditsInput = {
   alerts?: Prisma.AlertUncheckedCreateNestedManyWithoutSiteInput
   reports?: Prisma.ReportUncheckedCreateNestedManyWithoutSiteInput
   shareLinks?: Prisma.ShareLinkUncheckedCreateNestedManyWithoutSiteInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionUncheckedCreateNestedManyWithoutSiteInput
 }
 
 export type SiteCreateOrConnectWithoutAuditsInput = {
@@ -2307,6 +2508,7 @@ export type SiteUpdateWithoutAuditsInput = {
   alerts?: Prisma.AlertUpdateManyWithoutSiteNestedInput
   reports?: Prisma.ReportUpdateManyWithoutSiteNestedInput
   shareLinks?: Prisma.ShareLinkUpdateManyWithoutSiteNestedInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionUpdateManyWithoutSiteNestedInput
 }
 
 export type SiteUncheckedUpdateWithoutAuditsInput = {
@@ -2337,6 +2539,7 @@ export type SiteUncheckedUpdateWithoutAuditsInput = {
   alerts?: Prisma.AlertUncheckedUpdateManyWithoutSiteNestedInput
   reports?: Prisma.ReportUncheckedUpdateManyWithoutSiteNestedInput
   shareLinks?: Prisma.ShareLinkUncheckedUpdateManyWithoutSiteNestedInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionUncheckedUpdateManyWithoutSiteNestedInput
 }
 
 export type SiteCreateWithoutBotLogsInput = {
@@ -2367,6 +2570,7 @@ export type SiteCreateWithoutBotLogsInput = {
   alerts?: Prisma.AlertCreateNestedManyWithoutSiteInput
   reports?: Prisma.ReportCreateNestedManyWithoutSiteInput
   shareLinks?: Prisma.ShareLinkCreateNestedManyWithoutSiteInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionCreateNestedManyWithoutSiteInput
 }
 
 export type SiteUncheckedCreateWithoutBotLogsInput = {
@@ -2397,6 +2601,7 @@ export type SiteUncheckedCreateWithoutBotLogsInput = {
   alerts?: Prisma.AlertUncheckedCreateNestedManyWithoutSiteInput
   reports?: Prisma.ReportUncheckedCreateNestedManyWithoutSiteInput
   shareLinks?: Prisma.ShareLinkUncheckedCreateNestedManyWithoutSiteInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionUncheckedCreateNestedManyWithoutSiteInput
 }
 
 export type SiteCreateOrConnectWithoutBotLogsInput = {
@@ -2443,6 +2648,7 @@ export type SiteUpdateWithoutBotLogsInput = {
   alerts?: Prisma.AlertUpdateManyWithoutSiteNestedInput
   reports?: Prisma.ReportUpdateManyWithoutSiteNestedInput
   shareLinks?: Prisma.ShareLinkUpdateManyWithoutSiteNestedInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionUpdateManyWithoutSiteNestedInput
 }
 
 export type SiteUncheckedUpdateWithoutBotLogsInput = {
@@ -2473,6 +2679,7 @@ export type SiteUncheckedUpdateWithoutBotLogsInput = {
   alerts?: Prisma.AlertUncheckedUpdateManyWithoutSiteNestedInput
   reports?: Prisma.ReportUncheckedUpdateManyWithoutSiteNestedInput
   shareLinks?: Prisma.ShareLinkUncheckedUpdateManyWithoutSiteNestedInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionUncheckedUpdateManyWithoutSiteNestedInput
 }
 
 export type SiteCreateWithoutGeoTestsInput = {
@@ -2503,6 +2710,7 @@ export type SiteCreateWithoutGeoTestsInput = {
   alerts?: Prisma.AlertCreateNestedManyWithoutSiteInput
   reports?: Prisma.ReportCreateNestedManyWithoutSiteInput
   shareLinks?: Prisma.ShareLinkCreateNestedManyWithoutSiteInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionCreateNestedManyWithoutSiteInput
 }
 
 export type SiteUncheckedCreateWithoutGeoTestsInput = {
@@ -2533,6 +2741,7 @@ export type SiteUncheckedCreateWithoutGeoTestsInput = {
   alerts?: Prisma.AlertUncheckedCreateNestedManyWithoutSiteInput
   reports?: Prisma.ReportUncheckedCreateNestedManyWithoutSiteInput
   shareLinks?: Prisma.ShareLinkUncheckedCreateNestedManyWithoutSiteInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionUncheckedCreateNestedManyWithoutSiteInput
 }
 
 export type SiteCreateOrConnectWithoutGeoTestsInput = {
@@ -2579,6 +2788,7 @@ export type SiteUpdateWithoutGeoTestsInput = {
   alerts?: Prisma.AlertUpdateManyWithoutSiteNestedInput
   reports?: Prisma.ReportUpdateManyWithoutSiteNestedInput
   shareLinks?: Prisma.ShareLinkUpdateManyWithoutSiteNestedInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionUpdateManyWithoutSiteNestedInput
 }
 
 export type SiteUncheckedUpdateWithoutGeoTestsInput = {
@@ -2609,6 +2819,7 @@ export type SiteUncheckedUpdateWithoutGeoTestsInput = {
   alerts?: Prisma.AlertUncheckedUpdateManyWithoutSiteNestedInput
   reports?: Prisma.ReportUncheckedUpdateManyWithoutSiteNestedInput
   shareLinks?: Prisma.ShareLinkUncheckedUpdateManyWithoutSiteNestedInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionUncheckedUpdateManyWithoutSiteNestedInput
 }
 
 export type SiteCreateWithoutGeoScoresInput = {
@@ -2639,6 +2850,7 @@ export type SiteCreateWithoutGeoScoresInput = {
   alerts?: Prisma.AlertCreateNestedManyWithoutSiteInput
   reports?: Prisma.ReportCreateNestedManyWithoutSiteInput
   shareLinks?: Prisma.ShareLinkCreateNestedManyWithoutSiteInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionCreateNestedManyWithoutSiteInput
 }
 
 export type SiteUncheckedCreateWithoutGeoScoresInput = {
@@ -2669,6 +2881,7 @@ export type SiteUncheckedCreateWithoutGeoScoresInput = {
   alerts?: Prisma.AlertUncheckedCreateNestedManyWithoutSiteInput
   reports?: Prisma.ReportUncheckedCreateNestedManyWithoutSiteInput
   shareLinks?: Prisma.ShareLinkUncheckedCreateNestedManyWithoutSiteInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionUncheckedCreateNestedManyWithoutSiteInput
 }
 
 export type SiteCreateOrConnectWithoutGeoScoresInput = {
@@ -2715,6 +2928,7 @@ export type SiteUpdateWithoutGeoScoresInput = {
   alerts?: Prisma.AlertUpdateManyWithoutSiteNestedInput
   reports?: Prisma.ReportUpdateManyWithoutSiteNestedInput
   shareLinks?: Prisma.ShareLinkUpdateManyWithoutSiteNestedInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionUpdateManyWithoutSiteNestedInput
 }
 
 export type SiteUncheckedUpdateWithoutGeoScoresInput = {
@@ -2745,6 +2959,7 @@ export type SiteUncheckedUpdateWithoutGeoScoresInput = {
   alerts?: Prisma.AlertUncheckedUpdateManyWithoutSiteNestedInput
   reports?: Prisma.ReportUncheckedUpdateManyWithoutSiteNestedInput
   shareLinks?: Prisma.ShareLinkUncheckedUpdateManyWithoutSiteNestedInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionUncheckedUpdateManyWithoutSiteNestedInput
 }
 
 export type SiteCreateWithoutAlertsInput = {
@@ -2775,6 +2990,7 @@ export type SiteCreateWithoutAlertsInput = {
   geoScores?: Prisma.GeoContentScoreCreateNestedManyWithoutSiteInput
   reports?: Prisma.ReportCreateNestedManyWithoutSiteInput
   shareLinks?: Prisma.ShareLinkCreateNestedManyWithoutSiteInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionCreateNestedManyWithoutSiteInput
 }
 
 export type SiteUncheckedCreateWithoutAlertsInput = {
@@ -2805,6 +3021,7 @@ export type SiteUncheckedCreateWithoutAlertsInput = {
   geoScores?: Prisma.GeoContentScoreUncheckedCreateNestedManyWithoutSiteInput
   reports?: Prisma.ReportUncheckedCreateNestedManyWithoutSiteInput
   shareLinks?: Prisma.ShareLinkUncheckedCreateNestedManyWithoutSiteInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionUncheckedCreateNestedManyWithoutSiteInput
 }
 
 export type SiteCreateOrConnectWithoutAlertsInput = {
@@ -2851,6 +3068,7 @@ export type SiteUpdateWithoutAlertsInput = {
   geoScores?: Prisma.GeoContentScoreUpdateManyWithoutSiteNestedInput
   reports?: Prisma.ReportUpdateManyWithoutSiteNestedInput
   shareLinks?: Prisma.ShareLinkUpdateManyWithoutSiteNestedInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionUpdateManyWithoutSiteNestedInput
 }
 
 export type SiteUncheckedUpdateWithoutAlertsInput = {
@@ -2881,6 +3099,7 @@ export type SiteUncheckedUpdateWithoutAlertsInput = {
   geoScores?: Prisma.GeoContentScoreUncheckedUpdateManyWithoutSiteNestedInput
   reports?: Prisma.ReportUncheckedUpdateManyWithoutSiteNestedInput
   shareLinks?: Prisma.ShareLinkUncheckedUpdateManyWithoutSiteNestedInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionUncheckedUpdateManyWithoutSiteNestedInput
 }
 
 export type SiteCreateWithoutReportsInput = {
@@ -2911,6 +3130,7 @@ export type SiteCreateWithoutReportsInput = {
   geoScores?: Prisma.GeoContentScoreCreateNestedManyWithoutSiteInput
   alerts?: Prisma.AlertCreateNestedManyWithoutSiteInput
   shareLinks?: Prisma.ShareLinkCreateNestedManyWithoutSiteInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionCreateNestedManyWithoutSiteInput
 }
 
 export type SiteUncheckedCreateWithoutReportsInput = {
@@ -2941,6 +3161,7 @@ export type SiteUncheckedCreateWithoutReportsInput = {
   geoScores?: Prisma.GeoContentScoreUncheckedCreateNestedManyWithoutSiteInput
   alerts?: Prisma.AlertUncheckedCreateNestedManyWithoutSiteInput
   shareLinks?: Prisma.ShareLinkUncheckedCreateNestedManyWithoutSiteInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionUncheckedCreateNestedManyWithoutSiteInput
 }
 
 export type SiteCreateOrConnectWithoutReportsInput = {
@@ -2987,6 +3208,7 @@ export type SiteUpdateWithoutReportsInput = {
   geoScores?: Prisma.GeoContentScoreUpdateManyWithoutSiteNestedInput
   alerts?: Prisma.AlertUpdateManyWithoutSiteNestedInput
   shareLinks?: Prisma.ShareLinkUpdateManyWithoutSiteNestedInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionUpdateManyWithoutSiteNestedInput
 }
 
 export type SiteUncheckedUpdateWithoutReportsInput = {
@@ -3017,6 +3239,7 @@ export type SiteUncheckedUpdateWithoutReportsInput = {
   geoScores?: Prisma.GeoContentScoreUncheckedUpdateManyWithoutSiteNestedInput
   alerts?: Prisma.AlertUncheckedUpdateManyWithoutSiteNestedInput
   shareLinks?: Prisma.ShareLinkUncheckedUpdateManyWithoutSiteNestedInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionUncheckedUpdateManyWithoutSiteNestedInput
 }
 
 export type SiteCreateWithoutShareLinksInput = {
@@ -3047,6 +3270,7 @@ export type SiteCreateWithoutShareLinksInput = {
   geoScores?: Prisma.GeoContentScoreCreateNestedManyWithoutSiteInput
   alerts?: Prisma.AlertCreateNestedManyWithoutSiteInput
   reports?: Prisma.ReportCreateNestedManyWithoutSiteInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionCreateNestedManyWithoutSiteInput
 }
 
 export type SiteUncheckedCreateWithoutShareLinksInput = {
@@ -3077,6 +3301,7 @@ export type SiteUncheckedCreateWithoutShareLinksInput = {
   geoScores?: Prisma.GeoContentScoreUncheckedCreateNestedManyWithoutSiteInput
   alerts?: Prisma.AlertUncheckedCreateNestedManyWithoutSiteInput
   reports?: Prisma.ReportUncheckedCreateNestedManyWithoutSiteInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionUncheckedCreateNestedManyWithoutSiteInput
 }
 
 export type SiteCreateOrConnectWithoutShareLinksInput = {
@@ -3123,6 +3348,7 @@ export type SiteUpdateWithoutShareLinksInput = {
   geoScores?: Prisma.GeoContentScoreUpdateManyWithoutSiteNestedInput
   alerts?: Prisma.AlertUpdateManyWithoutSiteNestedInput
   reports?: Prisma.ReportUpdateManyWithoutSiteNestedInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionUpdateManyWithoutSiteNestedInput
 }
 
 export type SiteUncheckedUpdateWithoutShareLinksInput = {
@@ -3153,6 +3379,7 @@ export type SiteUncheckedUpdateWithoutShareLinksInput = {
   geoScores?: Prisma.GeoContentScoreUncheckedUpdateManyWithoutSiteNestedInput
   alerts?: Prisma.AlertUncheckedUpdateManyWithoutSiteNestedInput
   reports?: Prisma.ReportUncheckedUpdateManyWithoutSiteNestedInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionUncheckedUpdateManyWithoutSiteNestedInput
 }
 
 export type SiteCreateManyWorkspaceInput = {
@@ -3197,6 +3424,7 @@ export type SiteUpdateWithoutWorkspaceInput = {
   alerts?: Prisma.AlertUpdateManyWithoutSiteNestedInput
   reports?: Prisma.ReportUpdateManyWithoutSiteNestedInput
   shareLinks?: Prisma.ShareLinkUpdateManyWithoutSiteNestedInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionUpdateManyWithoutSiteNestedInput
 }
 
 export type SiteUncheckedUpdateWithoutWorkspaceInput = {
@@ -3227,6 +3455,7 @@ export type SiteUncheckedUpdateWithoutWorkspaceInput = {
   alerts?: Prisma.AlertUncheckedUpdateManyWithoutSiteNestedInput
   reports?: Prisma.ReportUncheckedUpdateManyWithoutSiteNestedInput
   shareLinks?: Prisma.ShareLinkUncheckedUpdateManyWithoutSiteNestedInput
+  indexNowSubmissions?: Prisma.IndexNowSubmissionUncheckedUpdateManyWithoutSiteNestedInput
 }
 
 export type SiteUncheckedUpdateManyWithoutWorkspaceInput = {
@@ -3265,6 +3494,7 @@ export type SiteCountOutputType = {
   alerts: number
   reports: number
   shareLinks: number
+  indexNowSubmissions: number
 }
 
 export type SiteCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -3284,6 +3514,7 @@ export type SiteCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   alerts?: boolean | SiteCountOutputTypeCountAlertsArgs
   reports?: boolean | SiteCountOutputTypeCountReportsArgs
   shareLinks?: boolean | SiteCountOutputTypeCountShareLinksArgs
+  indexNowSubmissions?: boolean | SiteCountOutputTypeCountIndexNowSubmissionsArgs
 }
 
 /**
@@ -3408,6 +3639,13 @@ export type SiteCountOutputTypeCountShareLinksArgs<ExtArgs extends runtime.Types
   where?: Prisma.ShareLinkWhereInput
 }
 
+/**
+ * SiteCountOutputType without action
+ */
+export type SiteCountOutputTypeCountIndexNowSubmissionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.IndexNowSubmissionWhereInput
+}
+
 
 export type SiteSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -3439,6 +3677,7 @@ export type SiteSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   alerts?: boolean | Prisma.Site$alertsArgs<ExtArgs>
   reports?: boolean | Prisma.Site$reportsArgs<ExtArgs>
   shareLinks?: boolean | Prisma.Site$shareLinksArgs<ExtArgs>
+  indexNowSubmissions?: boolean | Prisma.Site$indexNowSubmissionsArgs<ExtArgs>
   _count?: boolean | Prisma.SiteCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["site"]>
 
@@ -3508,6 +3747,7 @@ export type SiteInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   alerts?: boolean | Prisma.Site$alertsArgs<ExtArgs>
   reports?: boolean | Prisma.Site$reportsArgs<ExtArgs>
   shareLinks?: boolean | Prisma.Site$shareLinksArgs<ExtArgs>
+  indexNowSubmissions?: boolean | Prisma.Site$indexNowSubmissionsArgs<ExtArgs>
   _count?: boolean | Prisma.SiteCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type SiteIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -3537,6 +3777,7 @@ export type $SitePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     alerts: Prisma.$AlertPayload<ExtArgs>[]
     reports: Prisma.$ReportPayload<ExtArgs>[]
     shareLinks: Prisma.$ShareLinkPayload<ExtArgs>[]
+    indexNowSubmissions: Prisma.$IndexNowSubmissionPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -3962,6 +4203,7 @@ export interface Prisma__SiteClient<T, Null = never, ExtArgs extends runtime.Typ
   alerts<T extends Prisma.Site$alertsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Site$alertsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AlertPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   reports<T extends Prisma.Site$reportsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Site$reportsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReportPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   shareLinks<T extends Prisma.Site$shareLinksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Site$shareLinksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ShareLinkPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  indexNowSubmissions<T extends Prisma.Site$indexNowSubmissionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Site$indexNowSubmissionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$IndexNowSubmissionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4785,6 +5027,30 @@ export type Site$shareLinksArgs<ExtArgs extends runtime.Types.Extensions.Interna
   take?: number
   skip?: number
   distinct?: Prisma.ShareLinkScalarFieldEnum | Prisma.ShareLinkScalarFieldEnum[]
+}
+
+/**
+ * Site.indexNowSubmissions
+ */
+export type Site$indexNowSubmissionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the IndexNowSubmission
+   */
+  select?: Prisma.IndexNowSubmissionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the IndexNowSubmission
+   */
+  omit?: Prisma.IndexNowSubmissionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.IndexNowSubmissionInclude<ExtArgs> | null
+  where?: Prisma.IndexNowSubmissionWhereInput
+  orderBy?: Prisma.IndexNowSubmissionOrderByWithRelationInput | Prisma.IndexNowSubmissionOrderByWithRelationInput[]
+  cursor?: Prisma.IndexNowSubmissionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.IndexNowSubmissionScalarFieldEnum | Prisma.IndexNowSubmissionScalarFieldEnum[]
 }
 
 /**

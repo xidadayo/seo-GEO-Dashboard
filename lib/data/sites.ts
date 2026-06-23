@@ -123,6 +123,7 @@ export async function getSiteModuleData(siteId: string, section: string) {
     geoScores,
     alerts,
     reports,
+    indexNowSubmissions,
   ] = await Promise.all([
     section === "seo-index" || section === "pages" ? getSiteUrls(siteId, 100) : Promise.resolve([]),
     section === "seo-index" ? prisma.gscIndexStatus.findMany({
@@ -274,6 +275,21 @@ export async function getSiteModuleData(siteId: string, section: string) {
         creator: { select: { email: true, name: true } },
       },
     }) : Promise.resolve([]),
+    section === "seo-index" || section === "pages" ? prisma.indexNowSubmission.findMany({
+      where: { siteId },
+      orderBy: { submittedAt: "desc" },
+      take: section === "pages" ? 200 : 100,
+      select: {
+        id: true,
+        url: true,
+        endpoint: true,
+        status: true,
+        statusCode: true,
+        responseText: true,
+        submittedAt: true,
+        urlRecord: { select: { path: true } },
+      },
+    }) : Promise.resolve([]),
   ]);
 
   return {
@@ -290,5 +306,6 @@ export async function getSiteModuleData(siteId: string, section: string) {
     geoScores,
     alerts,
     reports,
+    indexNowSubmissions,
   };
 }

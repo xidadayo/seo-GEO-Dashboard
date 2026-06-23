@@ -394,6 +394,7 @@ export const ModelName = {
   Url: 'Url',
   GscSearchPerformance: 'GscSearchPerformance',
   GscIndexStatus: 'GscIndexStatus',
+  IndexNowSubmission: 'IndexNowSubmission',
   Ga4DailyTraffic: 'Ga4DailyTraffic',
   Ga4RealtimeSnapshot: 'Ga4RealtimeSnapshot',
   PageSpeedResult: 'PageSpeedResult',
@@ -420,7 +421,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "workspace" | "workspaceMember" | "site" | "siteBrandTerm" | "siteKeyword" | "integration" | "url" | "gscSearchPerformance" | "gscIndexStatus" | "ga4DailyTraffic" | "ga4RealtimeSnapshot" | "pageSpeedResult" | "technicalSeoAudit" | "aiBotLog" | "geoQueryTest" | "geoContentScore" | "alert" | "report" | "shareLink" | "auditLog"
+    modelProps: "user" | "workspace" | "workspaceMember" | "site" | "siteBrandTerm" | "siteKeyword" | "integration" | "url" | "gscSearchPerformance" | "gscIndexStatus" | "indexNowSubmission" | "ga4DailyTraffic" | "ga4RealtimeSnapshot" | "pageSpeedResult" | "technicalSeoAudit" | "aiBotLog" | "geoQueryTest" | "geoContentScore" | "alert" | "report" | "shareLink" | "auditLog"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1161,6 +1162,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.GscIndexStatusCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.GscIndexStatusCountAggregateOutputType> | number
+        }
+      }
+    }
+    IndexNowSubmission: {
+      payload: Prisma.$IndexNowSubmissionPayload<ExtArgs>
+      fields: Prisma.IndexNowSubmissionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.IndexNowSubmissionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$IndexNowSubmissionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.IndexNowSubmissionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$IndexNowSubmissionPayload>
+        }
+        findFirst: {
+          args: Prisma.IndexNowSubmissionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$IndexNowSubmissionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.IndexNowSubmissionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$IndexNowSubmissionPayload>
+        }
+        findMany: {
+          args: Prisma.IndexNowSubmissionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$IndexNowSubmissionPayload>[]
+        }
+        create: {
+          args: Prisma.IndexNowSubmissionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$IndexNowSubmissionPayload>
+        }
+        createMany: {
+          args: Prisma.IndexNowSubmissionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.IndexNowSubmissionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$IndexNowSubmissionPayload>[]
+        }
+        delete: {
+          args: Prisma.IndexNowSubmissionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$IndexNowSubmissionPayload>
+        }
+        update: {
+          args: Prisma.IndexNowSubmissionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$IndexNowSubmissionPayload>
+        }
+        deleteMany: {
+          args: Prisma.IndexNowSubmissionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.IndexNowSubmissionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.IndexNowSubmissionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$IndexNowSubmissionPayload>[]
+        }
+        upsert: {
+          args: Prisma.IndexNowSubmissionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$IndexNowSubmissionPayload>
+        }
+        aggregate: {
+          args: Prisma.IndexNowSubmissionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateIndexNowSubmission>
+        }
+        groupBy: {
+          args: Prisma.IndexNowSubmissionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.IndexNowSubmissionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.IndexNowSubmissionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.IndexNowSubmissionCountAggregateOutputType> | number
         }
       }
     }
@@ -2160,6 +2235,21 @@ export const GscIndexStatusScalarFieldEnum = {
 export type GscIndexStatusScalarFieldEnum = (typeof GscIndexStatusScalarFieldEnum)[keyof typeof GscIndexStatusScalarFieldEnum]
 
 
+export const IndexNowSubmissionScalarFieldEnum = {
+  id: 'id',
+  siteId: 'siteId',
+  urlId: 'urlId',
+  url: 'url',
+  endpoint: 'endpoint',
+  status: 'status',
+  statusCode: 'statusCode',
+  responseText: 'responseText',
+  submittedAt: 'submittedAt'
+} as const
+
+export type IndexNowSubmissionScalarFieldEnum = (typeof IndexNowSubmissionScalarFieldEnum)[keyof typeof IndexNowSubmissionScalarFieldEnum]
+
+
 export const Ga4DailyTrafficScalarFieldEnum = {
   id: 'id',
   siteId: 'siteId',
@@ -2624,6 +2714,7 @@ export type GlobalOmitConfig = {
   url?: Prisma.UrlOmit
   gscSearchPerformance?: Prisma.GscSearchPerformanceOmit
   gscIndexStatus?: Prisma.GscIndexStatusOmit
+  indexNowSubmission?: Prisma.IndexNowSubmissionOmit
   ga4DailyTraffic?: Prisma.Ga4DailyTrafficOmit
   ga4RealtimeSnapshot?: Prisma.Ga4RealtimeSnapshotOmit
   pageSpeedResult?: Prisma.PageSpeedResultOmit

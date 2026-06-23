@@ -61,6 +61,7 @@ export const ModelName = {
   Url: 'Url',
   GscSearchPerformance: 'GscSearchPerformance',
   GscIndexStatus: 'GscIndexStatus',
+  IndexNowSubmission: 'IndexNowSubmission',
   Ga4DailyTraffic: 'Ga4DailyTraffic',
   Ga4RealtimeSnapshot: 'Ga4RealtimeSnapshot',
   PageSpeedResult: 'PageSpeedResult',
@@ -231,6 +232,21 @@ export const GscIndexStatusScalarFieldEnum = {
 } as const
 
 export type GscIndexStatusScalarFieldEnum = (typeof GscIndexStatusScalarFieldEnum)[keyof typeof GscIndexStatusScalarFieldEnum]
+
+
+export const IndexNowSubmissionScalarFieldEnum = {
+  id: 'id',
+  siteId: 'siteId',
+  urlId: 'urlId',
+  url: 'url',
+  endpoint: 'endpoint',
+  status: 'status',
+  statusCode: 'statusCode',
+  responseText: 'responseText',
+  submittedAt: 'submittedAt'
+} as const
+
+export type IndexNowSubmissionScalarFieldEnum = (typeof IndexNowSubmissionScalarFieldEnum)[keyof typeof IndexNowSubmissionScalarFieldEnum]
 
 
 export const Ga4DailyTrafficScalarFieldEnum = {

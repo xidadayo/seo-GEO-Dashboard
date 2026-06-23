@@ -89,6 +89,7 @@ model Site {
   alerts         Alert[]
   reports        Report[]
   shareLinks     ShareLink[]
+  indexNowSubmissions IndexNowSubmission[]
   @@unique([workspaceId, domain])
 }
 
@@ -142,6 +143,7 @@ model Url {
   pageSpeed PageSpeedResult[]
   audits TechnicalSeoAudit[]
   geoScores GeoContentScore[]
+  indexNowSubmissions IndexNowSubmission[]
   @@unique([siteId, url])
 }
 
@@ -177,6 +179,21 @@ model GscIndexStatus {
   checkedAt DateTime @default(now())
   site Site @relation(fields: [siteId], references: [id], onDelete: Cascade)
   url Url @relation(fields: [urlId], references: [id], onDelete: Cascade)
+}
+
+model IndexNowSubmission {
+  id String @id @default(cuid())
+  siteId String
+  urlId String?
+  url String
+  endpoint String
+  status String
+  statusCode Int?
+  responseText String?
+  submittedAt DateTime @default(now())
+  site Site @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  urlRecord Url? @relation(fields: [urlId], references: [id], onDelete: SetNull)
+  @@index([siteId, submittedAt])
 }
 
 model Ga4DailyTraffic {

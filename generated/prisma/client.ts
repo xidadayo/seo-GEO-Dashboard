@@ -92,6 +92,11 @@ export type GscSearchPerformance = Prisma.GscSearchPerformanceModel
  */
 export type GscIndexStatus = Prisma.GscIndexStatusModel
 /**
+ * Model IndexNowSubmission
+ * 
+ */
+export type IndexNowSubmission = Prisma.IndexNowSubmissionModel
+/**
  * Model Ga4DailyTraffic
  * 
  */
