@@ -502,6 +502,7 @@ const gscFields: Field[] = [
   { name: "gscProperty", label: "GSC 资源", placeholder: "sc-domain:example.com" },
   { name: "siteUrl", label: "站点 URL", placeholder: "https://example.com" },
   { name: "scopes", label: "授权范围", placeholder: "webmasters.readonly, webmasters" },
+  { name: "inspectionUrlLimit", label: "URL Inspection 数量", placeholder: "默认 50，最多 200" },
   { name: "serviceAccountJson", label: "服务账号 JSON", placeholder: "粘贴 JSON，保存时加密", sensitive: true },
   { name: "oauthClientId", label: "OAuth Client ID" },
   { name: "oauthClientSecret", label: "OAuth Client Secret", type: "password", sensitive: true },

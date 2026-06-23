@@ -33,6 +33,11 @@ function floatMetric(value: unknown) {
   return Number.isFinite(parsed) ? parsed : 0;
 }
 
+function positiveInt(value: unknown, fallback: number) {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) && parsed > 0 ? Math.round(parsed) : fallback;
+}
+
 async function getConfig(siteId: string, provider: string) {
   const integration = await prisma.integration.findUnique({
     where: { siteId_provider: { siteId, provider } },
@@ -68,6 +73,28 @@ async function googleJson<T>(url: string, token: string, body: unknown): Promise
     throw new Error(String(message));
   }
   return data as T;
+}
+
+async function inspectUrl(token: string, inspectionUrl: string, siteUrl: string) {
+  return googleJson<{
+    inspectionResult?: {
+      inspectionResultLink?: string;
+      indexStatusResult?: {
+        verdict?: string;
+        coverageState?: string;
+        robotsTxtState?: string;
+        indexingState?: string;
+        lastCrawlTime?: string;
+        googleCanonical?: string;
+        userCanonical?: string;
+        sitemap?: string | string[];
+      };
+    };
+  }>(
+    "https://searchconsole.googleapis.com/v1/urlInspection/index:inspect",
+    token,
+    { inspectionUrl, siteUrl },
+  );
 }
 
 async function fetchWithRetry(request: () => Promise<Response>, label: string, attempts = 3) {
@@ -172,6 +199,63 @@ export async function syncGscSearchPerformance(siteId: string): Promise<SyncResu
   }
 }
 
+export async function syncGscUrlInspection(siteId: string): Promise<SyncResult> {
+  const provider = "google-search-console";
+  try {
+    const config = await getConfig(siteId, provider);
+    if (!config) throw new Error("Google Search Console integration is not configured.");
+    const siteUrl = asString(config.gscProperty) || asString(config.siteUrl);
+    if (!siteUrl) throw new Error("GSC Property is required.");
+    const token = await getServiceAccountAccessToken(config.serviceAccountJson, [GSC_SCOPE]);
+    const limit = Math.min(200, positiveInt(config.inspectionUrlLimit, 50));
+    const urls = await prisma.url.findMany({
+      where: { siteId, isInSitemap: true },
+      orderBy: [{ isCore: "desc" }, { url: "asc" }],
+      take: limit,
+      select: { id: true, url: true },
+    });
+    if (urls.length === 0) return { provider: "google-url-inspection", ok: false, rows: 0, error: "No sitemap URLs are available for URL Inspection." };
+
+    let rows = 0;
+    const errors: string[] = [];
+    for (const item of urls) {
+      try {
+        const data = await inspectUrl(token, item.url, siteUrl);
+        const status = data.inspectionResult?.indexStatusResult;
+        if (!status) throw new Error("URL Inspection response did not include indexStatusResult.");
+        const sitemap = Array.isArray(status.sitemap) ? status.sitemap.join(", ") : status.sitemap;
+        await prisma.gscIndexStatus.deleteMany({ where: { siteId, urlId: item.id } });
+        await prisma.gscIndexStatus.create({
+          data: {
+            siteId,
+            urlId: item.id,
+            verdict: status.verdict ?? null,
+            coverageState: status.coverageState ?? null,
+            indexingState: status.indexingState ?? null,
+            robotsTxtState: status.robotsTxtState ?? null,
+            googleCanonical: status.googleCanonical ?? null,
+            userCanonical: status.userCanonical ?? null,
+            sitemap: sitemap ?? null,
+            lastCrawlTime: status.lastCrawlTime ? new Date(status.lastCrawlTime) : null,
+            rawJson: data,
+          },
+        });
+        rows += 1;
+      } catch (error) {
+        errors.push(`${item.url}: ${error instanceof Error ? error.message : "Inspection failed."}`);
+      }
+      await sleep(250);
+    }
+    if (rows === 0) throw new Error(errors.slice(0, 3).join("; ") || "URL Inspection failed.");
+    await setIntegrationStatus(siteId, provider, true);
+    return { provider: "google-url-inspection", ok: errors.length === 0, rows, error: errors.length ? errors.slice(0, 3).join("; ") : undefined };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "URL Inspection sync failed.";
+    await setIntegrationStatus(siteId, provider, false, message).catch(() => undefined);
+    return { provider: "google-url-inspection", ok: false, rows: 0, error: message };
+  }
+}
+
 export async function syncGa4Traffic(siteId: string): Promise<SyncResult> {
   const provider = "ga4";
   try {
@@ -272,9 +356,10 @@ async function syncGa4Realtime(siteId: string, propertyId: string, token: string
 }
 
 export async function syncGoogleProviders(siteId: string) {
-  const [gsc, ga4] = await Promise.all([
+  const [gsc, inspection, ga4] = await Promise.all([
     syncGscSearchPerformance(siteId),
+    syncGscUrlInspection(siteId),
     syncGa4Traffic(siteId),
   ]);
-  return [gsc, ga4];
+  return [gsc, inspection, ga4];
 }
