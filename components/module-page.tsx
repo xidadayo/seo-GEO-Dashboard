@@ -476,7 +476,7 @@ function SettingsForm({ site }: { site: SiteSettings | null }) {
         {panel === "bing-indexnow" ? <IntegrationForm key={`bing-indexnow-${JSON.stringify(integrations["bing-indexnow"] ?? {})}`} integration={integrations["bing-indexnow"]} provider="bing-indexnow" siteId={site?.id} title="Bing / IndexNow" description="Bing Webmaster 和 IndexNow 提交设置。" onSubmit={saveIntegration} saving={saving} message={message} fields={bingFields} /> : null}
         {panel === "ai-search" ? <IntegrationForm key={`ai-search-${JSON.stringify(integrations["ai-search"] ?? {})}`} integration={integrations["ai-search"]} provider="ai-search" title="AI 搜索服务商" description="用于 AI 可见度测试的服务商适配配置。" onSubmit={saveIntegration} saving={saving} message={message} fields={aiFields} /> : null}
         {panel === "logs" ? <IntegrationForm key={`logs-${JSON.stringify(integrations.logs ?? {})}`} integration={integrations.logs} provider="logs" title="日志" description="访问日志上传、挂载目录、Cloudflare 或 Webhook 配置。" onSubmit={saveIntegration} saving={saving} message={message} fields={logFields} /> : null}
-        {panel === "alerts" ? <IntegrationForm key={`alerts-${JSON.stringify(integrations.alerts ?? {})}`} integration={integrations.alerts} provider="alerts" title="告警" description="邮件和 Webhook 告警渠道，以及严重程度阈值。" onSubmit={saveIntegration} saving={saving} message={message} fields={alertFields} /> : null}
+        {panel === "alerts" ? <IntegrationForm key={`alerts-${JSON.stringify(integrations.alerts ?? {})}`} integration={integrations.alerts} provider="alerts" siteId={site?.id} title="告警" description="邮件和 Webhook 告警渠道，以及严重程度阈值。" onSubmit={saveIntegration} saving={saving} message={message} fields={alertFields} /> : null}
         {panel === "sharing" ? <IntegrationForm key={`sharing-${JSON.stringify(integrations.sharing ?? {})}`} integration={integrations.sharing} provider="sharing" title="分享" description="只读仪表盘/报告分享和 API Token 权限限制。" onSubmit={saveIntegration} saving={saving} message={message} fields={sharingFields} /> : null}
       </div>
     </div>
@@ -580,7 +580,10 @@ function IntegrationForm({ provider, siteId, title, description, fields, onSubmi
   return <form onSubmit={(event) => onSubmit(event, provider)}><SectionTitle title={title} description={description} /><IntegrationStatus integration={integration} /><div className="mt-6 grid gap-5 md:grid-cols-2">{fields.map((field) => {
     const hasSavedSensitiveValue = field.sensitive && integration?.savedSensitiveFields[field.name];
     return <Input key={field.name} label={field.label} name={field.name} type={field.type ?? "text"} defaultValue={field.sensitive ? "" : integration?.config[field.name] ?? ""} placeholder={hasSavedSensitiveValue ? "已安全保存，留空则保留现有值。" : field.placeholder} />;
-  })}</div>{provider === "bing-indexnow" && siteId ? <div className="mt-5 flex justify-start"><SiteActionButton siteId={siteId} action="indexnow" variant="outline">提交 IndexNow</SiteActionButton></div> : null}<SaveBar saving={saving} message={message} /></form>;
+  })}</div>{siteId && (provider === "bing-indexnow" || provider === "alerts") ? <div className="mt-5 flex justify-start gap-2">
+    {provider === "bing-indexnow" ? <SiteActionButton siteId={siteId} action="indexnow" variant="outline">提交 IndexNow</SiteActionButton> : null}
+    {provider === "alerts" ? <SiteActionButton siteId={siteId} action="alert-test" variant="outline">发送测试告警</SiteActionButton> : null}
+  </div> : null}<SaveBar saving={saving} message={message} /></form>;
 }
 
 function IntegrationStatus({ integration }: { integration?: IntegrationState }) {

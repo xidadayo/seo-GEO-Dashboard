@@ -2,6 +2,7 @@ import { prisma } from "@/lib/db/client";
 import { decryptSecret } from "@/lib/crypto";
 import { pathFromUrl } from "@/lib/sitemap";
 import { Prisma } from "@/generated/prisma/client";
+import { createSiteAlert } from "@/lib/providers/alert-sync";
 
 type ProviderConfig = Record<string, unknown>;
 
@@ -163,15 +164,24 @@ export async function runPageSpeedChecks(siteId: string, options: RunOptions = {
 
       for (const strategy of strategies) {
         const data = await fetchPageSpeed(targetUrl, strategy, apiKey);
+        const metrics = extractMetrics(data);
         await prisma.pageSpeedResult.create({
           data: {
             siteId,
             urlId: urlRecord.id,
             strategy,
-            ...extractMetrics(data),
+            ...metrics,
             rawJson: JSON.parse(JSON.stringify(data)) as Prisma.InputJsonValue,
           },
         });
+        if (metrics.performanceScore != null && metrics.performanceScore < 50) {
+          await createSiteAlert(siteId, {
+            alertType: "PAGESPEED",
+            severity: "HIGH",
+            title: `PageSpeed 性能过低：${targetUrl}`,
+            message: `${strategy} 性能分 ${metrics.performanceScore}，建议优先优化 LCP、图片、缓存和阻塞资源。`,
+          }).catch(() => undefined);
+        }
         rows += 1;
       }
     }

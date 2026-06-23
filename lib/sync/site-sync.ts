@@ -3,6 +3,7 @@ import { fetchSitemapUrls, pathFromUrl } from "@/lib/sitemap";
 import { syncGoogleProviders } from "@/lib/providers/google-sync";
 import { runPageSpeedChecks } from "@/lib/providers/pagespeed-sync";
 import { submitIndexNowUrls } from "@/lib/providers/indexnow-sync";
+import { createSiteAlert } from "@/lib/providers/alert-sync";
 
 export async function syncSitemap(siteId: string) {
   const site = await prisma.site.findUnique({ where: { id: siteId } });
@@ -39,5 +40,14 @@ export async function syncSite(siteId: string) {
     runPageSpeedChecks(siteId),
     submitIndexNowUrls(siteId),
   ]);
-  return { results: [sitemap, ...google, pagespeed, indexnow] };
+  const results = [sitemap, ...google, pagespeed, indexnow];
+  await Promise.all(results
+    .filter((item) => !item.ok && item.error)
+    .map((item) => createSiteAlert(siteId, {
+      alertType: `SYNC_${item.provider.toUpperCase()}`,
+      severity: "HIGH",
+      title: `${item.provider} 同步失败`,
+      message: item.error ?? "同步失败。",
+    }).catch(() => undefined)));
+  return { results };
 }

@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/db/client";
 import { Prisma } from "@/generated/prisma/client";
+import { createSiteAlert } from "@/lib/providers/alert-sync";
 
 type AuditIssue = {
   code: string;
@@ -222,6 +223,7 @@ async function auditUrl(siteId: string, urlId: string, targetUrl: string) {
       issuesJson: scored.issues as unknown as Prisma.InputJsonValue,
     },
   });
+  return { seoScore: scored.seoScore, issues: scored.issues };
 }
 
 export async function runTechnicalSeoAudit(siteId: string): Promise<SyncResult> {
@@ -241,7 +243,16 @@ export async function runTechnicalSeoAudit(siteId: string): Promise<SyncResult> 
     const errors: string[] = [];
     for (const item of urls) {
       try {
-        await auditUrl(siteId, item.id, item.url);
+        const result = await auditUrl(siteId, item.id, item.url);
+        const highIssues = result.issues.filter((issue) => issue.severity === "HIGH");
+        if (highIssues.length > 0 || result.seoScore < 80) {
+          await createSiteAlert(siteId, {
+            alertType: "TECHNICAL_SEO",
+            severity: highIssues.length > 0 ? "HIGH" : "MEDIUM",
+            title: `技术 SEO 问题：${item.url}`,
+            message: highIssues.length > 0 ? highIssues.map((issue) => issue.message).join("; ") : `页面技术 SEO 分数 ${result.seoScore}，建议检查标题、Meta、H1、Canonical 和内容质量。`,
+          }).catch(() => undefined);
+        }
         rows += 1;
       } catch (error) {
         errors.push(`${item.url}: ${error instanceof Error ? error.message : "audit failed"}`);

@@ -5,7 +5,7 @@ import { useState } from "react";
 import { Download, Play, RefreshCw, Settings2 } from "lucide-react";
 import { Button, buttonClassName } from "@/components/ui";
 
-type Action = "sync" | "settings" | "export" | "health" | "alerts" | "geo" | "logs" | "report" | "technical" | "indexnow";
+type Action = "sync" | "settings" | "export" | "health" | "alerts" | "geo" | "logs" | "report" | "technical" | "indexnow" | "alert-test";
 type IntegrationTarget = "google-search-console" | "ga4" | "pagespeed" | "bing-indexnow" | "ai-search" | "logs" | "alerts" | "sharing";
 
 export function SiteActionButton({
@@ -75,6 +75,12 @@ export function SiteActionButton({
         const response = await fetch(`/api/sites/${siteId}/indexnow/submit`, { method: "POST" });
         const result = await response.json().catch(() => ({}));
         if (!response.ok) throw new Error(result.error?.message ?? result.error ?? "IndexNow submission failed.");
+      }
+      if (action === "alert-test") {
+        const response = await fetch(`/api/sites/${siteId}/alerts/test`, { method: "POST" });
+        const result = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(result.error?.message ?? result.error ?? result.delivery?.error ?? "Alert test failed.");
+        alert(result.delivery?.ok ? "测试告警已发送。" : result.delivery?.error ?? "测试告警已记录。");
       }
       router.refresh();
     } catch (error) {
