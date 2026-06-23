@@ -1,4 +1,5 @@
 import type { ButtonHTMLAttributes, InputHTMLAttributes, ReactNode } from "react";
+import { GlossaryLabel } from "@/components/glossary";
 import { cn } from "@/lib/utils";
 
 export function Badge({ children, tone = "neutral" }: { children: ReactNode; tone?: "neutral" | "good" | "warn" | "danger" }) {
@@ -17,8 +18,8 @@ export function Panel({ children, className }: { children: ReactNode; className?
   return <section className={cn("rounded-2xl border border-[#e6ebee] bg-white", className)}>{children}</section>;
 }
 
-export function Input({ label, placeholder, type = "text", defaultValue, ...props }: InputHTMLAttributes<HTMLInputElement> & { label: string }) {
-  return <label className="flex flex-col gap-2 text-sm font-medium text-slate-700"><span>{label}</span><input type={type} defaultValue={defaultValue} placeholder={placeholder} {...props} className={cn("h-11 rounded-lg border border-[#dce4e7] bg-white px-3 text-sm outline-none transition focus:border-[#168779] focus:ring-2 focus:ring-[#168779]/10", props.className)} /></label>;
+export function Input({ label, placeholder, type = "text", defaultValue, ...props }: InputHTMLAttributes<HTMLInputElement> & { label: ReactNode }) {
+  return <label className="flex flex-col gap-2 text-sm font-medium text-slate-700"><span>{typeof label === "string" ? <GlossaryLabel>{label}</GlossaryLabel> : label}</span><input type={type} defaultValue={defaultValue} placeholder={placeholder} {...props} className={cn("h-11 rounded-lg border border-[#dce4e7] bg-white px-3 text-sm outline-none transition focus:border-[#168779] focus:ring-2 focus:ring-[#168779]/10", props.className)} /></label>;
 }
 
 export function EmptyState({ title, description, action }: { title: string; description: string; action?: ReactNode }) {

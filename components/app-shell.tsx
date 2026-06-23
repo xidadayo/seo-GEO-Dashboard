@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Activity, Bot, FileText, Gauge, Globe2, LayoutDashboard, Menu, Search, Settings, ShieldCheck, TimerReset, Users, X } from "lucide-react";
 import { useState } from "react";
+import { GlossaryLabel } from "@/components/glossary";
 import { cn } from "@/lib/utils";
 
 const nav = [
@@ -39,7 +40,7 @@ export function AppShell({ children, siteId, siteName, domain }: { children: Rea
         {nav.map(([label, slug, Icon]) => {
           const href = hasSite ? `/sites/${siteId}/${slug}` : "/sites";
           const active = path === href || (slug === "overview" && path === "/dashboard");
-          return <Link key={slug} href={href} onClick={() => setOpen(false)} className={cn("flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-white/62 transition hover:bg-white/7 hover:text-white", active && "bg-white/10 text-white")}><Icon className="size-[17px]" />{label}</Link>;
+          return <Link key={slug} href={href} onClick={() => setOpen(false)} className={cn("flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-white/62 transition hover:bg-white/7 hover:text-white", active && "bg-white/10 text-white")}><Icon className="size-[17px]" /><GlossaryLabel>{label}</GlossaryLabel></Link>;
         })}
       </nav>
       <div className="border-t border-white/10 pt-4 text-xs text-white/45">工作区<br/><span className="mt-1 block">v0.1.0 · 仅真实数据</span></div>

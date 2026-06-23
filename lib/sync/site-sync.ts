@@ -9,6 +9,15 @@ export async function syncSitemap(siteId: string) {
   if (!site.sitemapUrl) return { provider: "sitemap", ok: false, rows: 0, error: "Site does not have sitemapUrl configured." };
   try {
     const urls = await fetchSitemapUrls(site.sitemapUrl);
+    if (urls.length === 0) throw new Error("Sitemap did not return any URLs.");
+    const sitemapUrlSet = new Set(urls.map((item) => item.loc));
+    await prisma.url.deleteMany({
+      where: { siteId: site.id, isCore: false, url: { notIn: [...sitemapUrlSet] } },
+    });
+    await prisma.url.updateMany({
+      where: { siteId: site.id, isCore: true, url: { notIn: [...sitemapUrlSet] } },
+      data: { isInSitemap: false },
+    });
     const results = await Promise.all(urls.map((item) => prisma.url.upsert({
       where: { siteId_url: { siteId: site.id, url: item.loc } },
       update: { isInSitemap: true, path: pathFromUrl(item.loc) },
