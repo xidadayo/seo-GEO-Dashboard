@@ -5,7 +5,7 @@ import { useState } from "react";
 import { Download, Play, RefreshCw, Settings2 } from "lucide-react";
 import { Button, buttonClassName } from "@/components/ui";
 
-type Action = "sync" | "settings" | "export" | "health" | "alerts" | "geo" | "logs" | "report" | "technical" | "indexnow" | "alert-test" | "pagespeed" | "gsc-inspect";
+type Action = "sync" | "sync-all" | "settings" | "export" | "health" | "alerts" | "geo" | "logs" | "report" | "technical" | "indexnow" | "alert-test" | "pagespeed" | "gsc-inspect";
 type IntegrationTarget = "google-search-console" | "ga4" | "pagespeed" | "bing-indexnow" | "ai-search" | "logs" | "alerts" | "sharing";
 
 export function SiteActionButton({
@@ -45,6 +45,17 @@ export function SiteActionButton({
         const result = await response.json().catch(() => ({}));
         if (!response.ok) {
           throw new Error(result.error ?? result.results?.map((item: { provider: string; error?: string }) => `${item.provider}: ${item.error}`).join("\n") ?? "同步失败。");
+        }
+        const failed = result.results?.filter((item: { ok: boolean }) => !item.ok) ?? [];
+        if (failed.length > 0) {
+          alert(`部分数据源未同步成功：\n${failed.map((item: { provider: string; error?: string }) => `${item.provider}: ${item.error}`).join("\n")}`);
+        }
+      }
+      if (action === "sync-all") {
+        const response = await fetch(`/api/sites/${siteId}/sync/all`, { method: "POST" });
+        const result = await response.json().catch(() => ({}));
+        if (!response.ok) {
+          throw new Error(result.error ?? result.results?.map((item: { provider: string; error?: string }) => `${item.provider}: ${item.error}`).join("\n") ?? "同步全部失败。");
         }
         const failed = result.results?.filter((item: { ok: boolean }) => !item.ok) ?? [];
         if (failed.length > 0) {
@@ -114,7 +125,7 @@ function hrefFor(action: Action, siteId?: string, target?: IntegrationTarget) {
 }
 
 function iconFor(action: Action) {
-  if (action === "sync") return <RefreshCw />;
+  if (action === "sync" || action === "sync-all") return <RefreshCw />;
   if (action === "settings") return <Settings2 />;
   if (action === "export") return <Download />;
   return <Play />;

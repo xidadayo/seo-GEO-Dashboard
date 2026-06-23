@@ -102,7 +102,7 @@ export function OverviewDashboard({ summary }: { summary?: DashboardSummary | nu
   return <div className="mx-auto max-w-[1500px] animate-rise">
     <div className="flex flex-col justify-between gap-4 md:flex-row md:items-end">
       <div><p className="text-sm text-slate-500">概览</p><h1 className="mt-1 text-3xl font-semibold tracking-[-.03em] text-[#17212b]">{summary ? summary.siteName : "尚未连接真实数据"}</h1><p className="mt-2 text-sm text-slate-500">{summary ? `正在监控 ${summary.domain}。继续连接更多集成后，仪表盘会更完整。` : "创建站点并连接集成后，会展示 SEO、流量、PageSpeed 和 AI 可见度指标。"}</p></div>
-      <div className="flex gap-2"><SiteActionButton siteId={summary?.siteId} action="sync" variant="outline">同步站点地图</SiteActionButton><SiteActionButton siteId={summary?.siteId} action="settings">配置 <ArrowUpRight /></SiteActionButton></div>
+      <div className="flex gap-2"><SiteActionButton siteId={summary?.siteId} action="sync-all" variant="outline">同步全部</SiteActionButton><SiteActionButton siteId={summary?.siteId} action="settings">配置 <ArrowUpRight /></SiteActionButton></div>
     </div>
 
     <div className="mt-7 grid gap-4 xl:grid-cols-[1.15fr_.85fr]">
