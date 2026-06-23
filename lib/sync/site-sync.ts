@@ -9,6 +9,7 @@ import { syncAiBotLogs } from "@/lib/providers/log-sync";
 import { runGeoQueryTests } from "@/lib/providers/geo-sync";
 
 type SyncResult = { provider: string; ok: boolean; rows: number; error?: string };
+const FULL_SYNC_TIMEOUT_MS = 25_000;
 
 export async function syncSitemap(siteId: string) {
   const site = await prisma.site.findUnique({ where: { id: siteId } });
@@ -40,26 +41,39 @@ export async function syncSite(siteId: string) {
   const site = await prisma.site.findUnique({ where: { id: siteId }, select: { id: true } });
   if (!site) throw new Error("Site not found");
   const sitemap = await syncSitemap(siteId);
-  const [google] = await Promise.all([
-    syncGoogleProviders(siteId),
-  ]);
+  const google = await settleMany("google", syncGoogleProviders(siteId));
   const results = [sitemap, ...google];
-  await Promise.all(results
-    .filter((item) => !item.ok && item.error)
-    .map((item) => createSiteAlert(siteId, {
-      alertType: `SYNC_${item.provider.toUpperCase()}`,
-      severity: "HIGH",
-      title: `${item.provider} 同步失败`,
-      message: item.error ?? "同步失败。",
-    }).catch(() => undefined)));
+  await createAlertsForFailures(siteId, results);
   return { results };
 }
 
 async function settle(provider: string, task: Promise<SyncResult>): Promise<SyncResult> {
   try {
-    return await task;
+    return await withTimeout(provider, task);
   } catch (error) {
     return { provider, ok: false, rows: 0, error: error instanceof Error ? error.message : "Sync failed." };
+  }
+}
+
+async function settleMany(provider: string, task: Promise<SyncResult[]>): Promise<SyncResult[]> {
+  try {
+    return await withTimeout(provider, task);
+  } catch (error) {
+    return [{ provider, ok: false, rows: 0, error: error instanceof Error ? error.message : "Sync failed." }];
+  }
+}
+
+async function withTimeout<T>(provider: string, task: Promise<T>): Promise<T> {
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  try {
+    return await Promise.race([
+      task,
+      new Promise<T>((_, reject) => {
+        timer = setTimeout(() => reject(new Error(`${provider} sync exceeded ${FULL_SYNC_TIMEOUT_MS / 1000}s and was skipped for this run.`)), FULL_SYNC_TIMEOUT_MS);
+      }),
+    ]);
+  } finally {
+    if (timer) clearTimeout(timer);
   }
 }
 
@@ -69,7 +83,7 @@ export async function syncAllSiteData(siteId: string) {
 
   const sitemap = await syncSitemap(siteId);
   const [google, inspection, pagespeed, indexnow, technical, logs, geo] = await Promise.all([
-    syncGoogleProviders(siteId),
+    settleMany("google", syncGoogleProviders(siteId)),
     settle("google-url-inspection", syncGscUrlInspection(siteId)),
     settle("pagespeed", runPageSpeedChecks(siteId)),
     settle("indexnow", submitIndexNowUrls(siteId)),
@@ -79,6 +93,11 @@ export async function syncAllSiteData(siteId: string) {
   ]);
 
   const results = [sitemap, ...google, inspection, pagespeed, indexnow, technical, logs, geo];
+  await createAlertsForFailures(siteId, results);
+  return { results };
+}
+
+async function createAlertsForFailures(siteId: string, results: SyncResult[]) {
   await Promise.all(results
     .filter((item) => !item.ok && item.error)
     .map((item) => createSiteAlert(siteId, {
@@ -87,5 +106,4 @@ export async function syncAllSiteData(siteId: string) {
       title: `${item.provider} 同步失败`,
       message: item.error ?? "同步失败。",
     }).catch(() => undefined)));
-  return { results };
 }

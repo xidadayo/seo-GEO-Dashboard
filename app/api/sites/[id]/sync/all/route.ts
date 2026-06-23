@@ -5,8 +5,7 @@ export async function POST(_: Request, { params }: { params: Promise<{ id: strin
   const { id } = await params;
   try {
     const result = await syncAllSiteData(id);
-    const ok = result.results.some((item) => item.ok);
-    return NextResponse.json(result, { status: ok ? 200 : 502 });
+    return NextResponse.json(result);
   } catch (error) {
     return NextResponse.json({ error: error instanceof Error ? error.message : "Full sync failed." }, { status: 404 });
   }

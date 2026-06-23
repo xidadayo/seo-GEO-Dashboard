@@ -7,6 +7,7 @@ import { Button, buttonClassName } from "@/components/ui";
 
 type Action = "sync" | "sync-all" | "settings" | "export" | "health" | "alerts" | "geo" | "logs" | "report" | "technical" | "indexnow" | "alert-test" | "pagespeed" | "gsc-inspect";
 type IntegrationTarget = "google-search-console" | "ga4" | "pagespeed" | "bing-indexnow" | "ai-search" | "logs" | "alerts" | "sharing";
+type ActionResult = { results?: Array<{ provider: string; ok: boolean; error?: string }> };
 
 export function SiteActionButton({
   siteId,
@@ -41,66 +42,36 @@ export function SiteActionButton({
     setBusy(true);
     try {
       if (action === "sync") {
-        const response = await fetch(`/api/sites/${siteId}/sync`, { method: "POST" });
-        const result = await response.json().catch(() => ({}));
-        if (!response.ok) {
-          throw new Error(result.error ?? result.results?.map((item: { provider: string; error?: string }) => `${item.provider}: ${item.error}`).join("\n") ?? "同步失败。");
-        }
-        const failed = result.results?.filter((item: { ok: boolean }) => !item.ok) ?? [];
-        if (failed.length > 0) {
-          alert(`部分数据源未同步成功：\n${failed.map((item: { provider: string; error?: string }) => `${item.provider}: ${item.error}`).join("\n")}`);
-        }
+        const result = await postAction(`/api/sites/${siteId}/sync`, "同步失败。");
+        notifyPartialFailures(result);
       }
       if (action === "sync-all") {
-        const response = await fetch(`/api/sites/${siteId}/sync/all`, { method: "POST" });
-        const result = await response.json().catch(() => ({}));
-        if (!response.ok) {
-          throw new Error(result.error ?? result.results?.map((item: { provider: string; error?: string }) => `${item.provider}: ${item.error}`).join("\n") ?? "同步全部失败。");
-        }
-        const failed = result.results?.filter((item: { ok: boolean }) => !item.ok) ?? [];
-        if (failed.length > 0) {
-          alert(`部分数据源未同步成功：\n${failed.map((item: { provider: string; error?: string }) => `${item.provider}: ${item.error}`).join("\n")}`);
-        }
+        const result = await postAction(`/api/sites/${siteId}/sync/all`, "同步全部失败。");
+        notifyPartialFailures(result);
       }
       if (action === "geo") {
-        const response = await fetch(`/api/sites/${siteId}/geo/run`, { method: "POST" });
-        const result = await response.json().catch(() => ({}));
-        if (!response.ok) throw new Error(result.error ?? "GEO 测试失败。");
+        await postAction(`/api/sites/${siteId}/geo/run`, "GEO 测试失败。");
       }
       if (action === "logs") {
-        const response = await fetch(`/api/sites/${siteId}/logs/scan`, { method: "POST" });
-        const result = await response.json().catch(() => ({}));
-        if (!response.ok) throw new Error(result.error ?? "日志扫描失败。");
+        await postAction(`/api/sites/${siteId}/logs/scan`, "日志扫描失败。");
       }
       if (action === "report") {
-        const response = await fetch(`/api/sites/${siteId}/reports/generate`, { method: "POST" });
-        const result = await response.json().catch(() => ({}));
-        if (!response.ok) throw new Error(result.error ?? "Report generation failed.");
+        await postAction(`/api/sites/${siteId}/reports/generate`, "Report generation failed.");
       }
       if (action === "technical") {
-        const response = await fetch(`/api/sites/${siteId}/technical-seo/run`, { method: "POST" });
-        const result = await response.json().catch(() => ({}));
-        if (!response.ok) throw new Error(result.error ?? "Technical SEO audit failed.");
+        await postAction(`/api/sites/${siteId}/technical-seo/run`, "Technical SEO audit failed.");
       }
       if (action === "pagespeed") {
-        const response = await fetch(`/api/sites/${siteId}/pagespeed/run`, { method: "POST" });
-        const result = await response.json().catch(() => ({}));
-        if (!response.ok) throw new Error(result.error ?? "PageSpeed check failed.");
+        await postAction(`/api/sites/${siteId}/pagespeed/run`, "PageSpeed check failed.");
       }
       if (action === "gsc-inspect") {
-        const response = await fetch(`/api/sites/${siteId}/gsc/inspect`, { method: "POST" });
-        const result = await response.json().catch(() => ({}));
-        if (!response.ok) throw new Error(result.error ?? "URL Inspection failed.");
+        await postAction(`/api/sites/${siteId}/gsc/inspect`, "URL Inspection failed.");
       }
       if (action === "indexnow") {
-        const response = await fetch(`/api/sites/${siteId}/indexnow/submit`, { method: "POST" });
-        const result = await response.json().catch(() => ({}));
-        if (!response.ok) throw new Error(result.error?.message ?? result.error ?? "IndexNow submission failed.");
+        await postAction(`/api/sites/${siteId}/indexnow/submit`, "IndexNow submission failed.");
       }
       if (action === "alert-test") {
-        const response = await fetch(`/api/sites/${siteId}/alerts/test`, { method: "POST" });
-        const result = await response.json().catch(() => ({}));
-        if (!response.ok) throw new Error(result.error?.message ?? result.error ?? result.delivery?.error ?? "Alert test failed.");
+        const result = await postAction(`/api/sites/${siteId}/alerts/test`, "Alert test failed.") as { delivery?: { ok?: boolean; error?: string } };
         alert(result.delivery?.ok ? "测试告警已发送。" : result.delivery?.error ?? "测试告警已记录。");
       }
       router.refresh();
@@ -115,6 +86,25 @@ export function SiteActionButton({
     {busy ? <RefreshCw /> : iconFor(action)}
     {busy ? "处理中..." : children}
   </Button>;
+}
+
+async function postAction(url: string, fallbackMessage: string): Promise<ActionResult | Record<string, unknown>> {
+  const response = await fetch(url, { method: "POST" });
+  const result = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    const detail = Array.isArray(result.results)
+      ? result.results.map((item: { provider: string; error?: string }) => `${item.provider}: ${item.error}`).join("\n")
+      : undefined;
+    throw new Error(result.error?.message ?? result.error ?? detail ?? fallbackMessage);
+  }
+  return result;
+}
+
+function notifyPartialFailures(result: ActionResult | Record<string, unknown>) {
+  const failed = Array.isArray(result.results) ? result.results.filter((item) => !item.ok) : [];
+  if (failed.length > 0) {
+    alert(`部分数据源未同步成功：\n${failed.map((item) => `${item.provider}: ${item.error}`).join("\n")}`);
+  }
 }
 
 function hrefFor(action: Action, siteId?: string, target?: IntegrationTarget) {
