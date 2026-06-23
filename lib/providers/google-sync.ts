@@ -356,10 +356,9 @@ async function syncGa4Realtime(siteId: string, propertyId: string, token: string
 }
 
 export async function syncGoogleProviders(siteId: string) {
-  const [gsc, inspection, ga4] = await Promise.all([
+  const [gsc, ga4] = await Promise.all([
     syncGscSearchPerformance(siteId),
-    syncGscUrlInspection(siteId),
     syncGa4Traffic(siteId),
   ]);
-  return [gsc, inspection, ga4];
+  return [gsc, ga4];
 }

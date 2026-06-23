@@ -1,4 +1,6 @@
 import { subDays } from "date-fns";
+import { mkdir, writeFile } from "node:fs/promises";
+import path from "node:path";
 import { prisma } from "@/lib/db/client";
 import { Prisma } from "@/generated/prisma/client";
 
@@ -30,6 +32,77 @@ function average(values: Array<number | null | undefined>) {
   const filtered = values.filter((value): value is number => typeof value === "number" && Number.isFinite(value));
   if (filtered.length === 0) return null;
   return Math.round(filtered.reduce((total, value) => total + value, 0) / filtered.length);
+}
+
+function escapeHtml(value: unknown) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+function formatDate(value: string | Date) {
+  return new Date(value).toLocaleString("zh-CN");
+}
+
+function renderReportHtml(summary: ReportSummary) {
+  const items: Array<[string, string | number]> = [
+    ["URL 数", summary.totals.urls],
+    ["GSC 行数", summary.totals.gscRows],
+    ["自然搜索点击", summary.totals.clicks],
+    ["自然搜索曝光", summary.totals.impressions],
+    ["GA4 行数", summary.totals.ga4Rows],
+    ["活跃用户", summary.totals.activeUsers],
+    ["会话数", summary.totals.sessions],
+    ["浏览量", summary.totals.pageViews],
+    ["PageSpeed 检测", summary.totals.pageSpeedChecks],
+    ["最新移动端性能", summary.totals.latestMobilePerformance ?? "--"],
+    ["GEO 测试", summary.totals.geoTests],
+    ["平均 GEO 分", summary.totals.averageGeoScore ?? "--"],
+    ["未处理告警", summary.totals.openAlerts],
+  ];
+
+  return `<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>${escapeHtml(summary.site.name)} SEO/GEO 28 天报告</title>
+  <style>
+    body { margin: 0; font-family: Arial, "Microsoft YaHei", sans-serif; color: #17212b; background: #f4f7f8; }
+    main { max-width: 960px; margin: 0 auto; padding: 40px 24px; }
+    h1 { margin: 0; font-size: 30px; }
+    .muted { color: #60718a; }
+    .panel { margin-top: 24px; border: 1px solid #dfe7eb; border-radius: 14px; background: #fff; overflow: hidden; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 14px 18px; border-bottom: 1px solid #edf1f2; text-align: left; }
+    th { color: #60718a; background: #f8fafb; font-size: 13px; }
+    .value { font-weight: 700; }
+    @media print { body { background: #fff; } main { max-width: none; } }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>${escapeHtml(summary.site.name)} SEO/GEO 28 天报告</h1>
+    <p class="muted">${escapeHtml(summary.site.domain)} · ${formatDate(summary.period.start)} - ${formatDate(summary.period.end)}</p>
+    <section class="panel">
+      <table>
+        <thead><tr><th>指标</th><th>数值</th></tr></thead>
+        <tbody>${items.map(([label, value]) => `<tr><td>${escapeHtml(label)}</td><td class="value">${escapeHtml(value)}</td></tr>`).join("")}</tbody>
+      </table>
+    </section>
+  </main>
+</body>
+</html>`;
+}
+
+async function writeReportFile(siteId: string, reportId: string, summary: ReportSummary) {
+  const dir = path.join(process.cwd(), "public", "reports", siteId);
+  await mkdir(dir, { recursive: true });
+  const filename = `${reportId}.html`;
+  await writeFile(path.join(dir, filename), renderReportHtml(summary), "utf8");
+  return `/reports/${siteId}/${filename}`;
 }
 
 export async function generateSiteReport(siteId: string) {
@@ -94,8 +167,23 @@ export async function generateSiteReport(siteId: string) {
       summaryJson: summary as unknown as Prisma.InputJsonValue,
       createdBy: creator.id,
     },
-    select: { id: true, title: true, reportType: true, createdAt: true },
+    select: { id: true },
+  });
+  const fileUrl = await writeReportFile(siteId, report.id, summary);
+  const updatedReport = await prisma.report.update({
+    where: { id: report.id },
+    data: { fileUrl },
+    select: { id: true, title: true, reportType: true, createdAt: true, fileUrl: true },
   });
 
-  return { provider: "reports", ok: true, rows: 1, report };
+  return { provider: "reports", ok: true, rows: 1, report: updatedReport };
+}
+
+export async function getReportHtml(siteId: string, reportId: string) {
+  const report = await prisma.report.findFirst({
+    where: { id: reportId, siteId },
+    select: { summaryJson: true },
+  });
+  if (!report) throw new Error("Report not found");
+  return renderReportHtml(report.summaryJson as unknown as ReportSummary);
 }
