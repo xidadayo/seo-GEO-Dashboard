@@ -34,7 +34,7 @@ function TrendPanel({ summary }: { summary?: DashboardSummary | null }) {
   const hasTrend = trends.some((item) => item.seoScore != null || item.speedScore != null || item.impressions > 0 || item.users > 0);
   return <Panel className="flex flex-col justify-between p-6">
     <div className="flex items-start justify-between">
-      <div><p className="text-sm font-semibold"><GlossaryLabel>可见度脉冲</GlossaryLabel></p><p className="mt-1 text-xs text-slate-500">综合信号质量</p></div>
+      <div><p className="text-sm font-semibold"><GlossaryLabel>可见度趋势</GlossaryLabel></p><p className="mt-1 text-xs text-slate-500">SEO、速度、曝光和流量的综合变化</p></div>
       <Badge tone={hasTrend ? "good" : "warn"}>{hasTrend ? "已就绪" : "等待数据"}</Badge>
     </div>
     {hasTrend ? <div className="mt-6 grid h-[190px] grid-cols-4 items-end gap-3">
