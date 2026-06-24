@@ -7,7 +7,8 @@ import { Button, buttonClassName } from "@/components/ui";
 
 type Action = "sync" | "sync-all" | "settings" | "export" | "health" | "alerts" | "geo" | "logs" | "report" | "technical" | "indexnow" | "alert-test" | "pagespeed" | "gsc-inspect";
 type IntegrationTarget = "google-search-console" | "ga4" | "pagespeed" | "bing-indexnow" | "ai-search" | "logs" | "alerts" | "sharing";
-type ActionResult = { results?: Array<{ provider: string; ok: boolean; error?: string }> };
+type ResultItem = { provider: string; ok: boolean; error?: string; skipped?: boolean };
+type ActionResult = { results?: ResultItem[] };
 
 export function SiteActionButton({
   siteId,
@@ -42,34 +43,18 @@ export function SiteActionButton({
     setBusy(true);
     try {
       if (action === "sync") {
-        const result = await postAction(`/api/sites/${siteId}/sync`, "同步失败。");
-        notifyPartialFailures(result);
+        notifyPartialFailures(await postAction(`/api/sites/${siteId}/sync`, "同步失败。"), "部分数据源未同步成功");
       }
       if (action === "sync-all") {
-        const result = await postAction(`/api/sites/${siteId}/sync/all`, "同步全部失败。");
-        notifyPartialFailures(result);
+        notifyPartialFailures(await postAction(`/api/sites/${siteId}/sync/all`, "全局同步失败。"), "全局同步已完成，以下数据源本次未更新");
       }
-      if (action === "geo") {
-        await postAction(`/api/sites/${siteId}/geo/run`, "GEO 测试失败。");
-      }
-      if (action === "logs") {
-        await postAction(`/api/sites/${siteId}/logs/scan`, "日志扫描失败。");
-      }
-      if (action === "report") {
-        await postAction(`/api/sites/${siteId}/reports/generate`, "Report generation failed.");
-      }
-      if (action === "technical") {
-        await postAction(`/api/sites/${siteId}/technical-seo/run`, "Technical SEO audit failed.");
-      }
-      if (action === "pagespeed") {
-        await postAction(`/api/sites/${siteId}/pagespeed/run`, "PageSpeed check failed.");
-      }
-      if (action === "gsc-inspect") {
-        await postAction(`/api/sites/${siteId}/gsc/inspect`, "URL Inspection failed.");
-      }
-      if (action === "indexnow") {
-        await postAction(`/api/sites/${siteId}/indexnow/submit`, "IndexNow submission failed.");
-      }
+      if (action === "geo") await postAction(`/api/sites/${siteId}/geo/run`, "GEO 测试失败。");
+      if (action === "logs") await postAction(`/api/sites/${siteId}/logs/scan`, "日志扫描失败。");
+      if (action === "report") await postAction(`/api/sites/${siteId}/reports/generate`, "Report generation failed.");
+      if (action === "technical") await postAction(`/api/sites/${siteId}/technical-seo/run`, "Technical SEO audit failed.");
+      if (action === "pagespeed") await postAction(`/api/sites/${siteId}/pagespeed/run`, "PageSpeed check failed.");
+      if (action === "gsc-inspect") await postAction(`/api/sites/${siteId}/gsc/inspect`, "URL Inspection failed.");
+      if (action === "indexnow") await postAction(`/api/sites/${siteId}/indexnow/submit`, "IndexNow submission failed.");
       if (action === "alert-test") {
         const result = await postAction(`/api/sites/${siteId}/alerts/test`, "Alert test failed.") as { delivery?: { ok?: boolean; error?: string } };
         alert(result.delivery?.ok ? "测试告警已发送。" : result.delivery?.error ?? "测试告警已记录。");
@@ -93,17 +78,20 @@ async function postAction(url: string, fallbackMessage: string): Promise<ActionR
   const result = await response.json().catch(() => ({}));
   if (!response.ok) {
     const detail = Array.isArray(result.results)
-      ? result.results.map((item: { provider: string; error?: string }) => `${item.provider}: ${item.error}`).join("\n")
+      ? result.results
+        .filter((item: ResultItem) => !item.skipped)
+        .map((item: ResultItem) => `${item.provider}: ${item.error}`)
+        .join("\n")
       : undefined;
     throw new Error(result.error?.message ?? result.error ?? detail ?? fallbackMessage);
   }
   return result;
 }
 
-function notifyPartialFailures(result: ActionResult | Record<string, unknown>) {
-  const failed = Array.isArray(result.results) ? result.results.filter((item) => !item.ok) : [];
+function notifyPartialFailures(result: ActionResult | Record<string, unknown>, title: string) {
+  const failed = Array.isArray(result.results) ? result.results.filter((item) => !item.ok && !item.skipped) : [];
   if (failed.length > 0) {
-    alert(`部分数据源未同步成功：\n${failed.map((item) => `${item.provider}: ${item.error}`).join("\n")}`);
+    alert(`${title}：\n${failed.map((item) => `${item.provider}: ${item.error}`).join("\n")}`);
   }
 }
 

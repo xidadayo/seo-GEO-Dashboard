@@ -8,10 +8,10 @@ import { runTechnicalSeoAudit } from "@/lib/providers/technical-seo-sync";
 import { syncAiBotLogs } from "@/lib/providers/log-sync";
 import { runGeoQueryTests } from "@/lib/providers/geo-sync";
 
-type SyncResult = { provider: string; ok: boolean; rows: number; error?: string };
-const FULL_SYNC_TIMEOUT_MS = 25_000;
+type SyncResult = { provider: string; ok: boolean; rows: number; error?: string; skipped?: boolean };
+const FULL_SYNC_TIMEOUT_MS = 300_000;
 
-export async function syncSitemap(siteId: string) {
+export async function syncSitemap(siteId: string): Promise<SyncResult> {
   const site = await prisma.site.findUnique({ where: { id: siteId } });
   if (!site) throw new Error("Site not found");
   if (!site.sitemapUrl) return { provider: "sitemap", ok: false, rows: 0, error: "Site does not have sitemapUrl configured." };
@@ -47,6 +47,35 @@ export async function syncSite(siteId: string) {
   return { results };
 }
 
+export async function syncAllSiteData(siteId: string) {
+  const site = await prisma.site.findUnique({ where: { id: siteId }, select: { id: true } });
+  if (!site) throw new Error("Site not found");
+
+  const sitemap = await syncSitemap(siteId);
+  const [google, inspection, pagespeed, indexnow, technical, logs, geo] = await Promise.all([
+    settleMany("google", syncGoogleProviders(siteId)),
+    settle("google-url-inspection", syncGscUrlInspection(siteId)),
+    settle("pagespeed", runPageSpeedChecks(siteId)),
+    settle("indexnow", submitIndexNowUrls(siteId)),
+    settle("technical-seo", runTechnicalSeoAudit(siteId)),
+    settle("logs", syncAiBotLogs(siteId)),
+    settle("geo", runGeoQueryTests(siteId)),
+  ]);
+
+  const results: SyncResult[] = [
+    sitemap,
+    ...google,
+    inspection,
+    pagespeed,
+    indexnow,
+    technical,
+    normalizeOptionalLogsResult(logs),
+    geo,
+  ];
+  await createAlertsForFailures(siteId, results);
+  return { results };
+}
+
 async function settle(provider: string, task: Promise<SyncResult>): Promise<SyncResult> {
   try {
     return await withTimeout(provider, task);
@@ -69,7 +98,7 @@ async function withTimeout<T>(provider: string, task: Promise<T>): Promise<T> {
     return await Promise.race([
       task,
       new Promise<T>((_, reject) => {
-        timer = setTimeout(() => reject(new Error(`${provider} sync exceeded ${FULL_SYNC_TIMEOUT_MS / 1000}s and was skipped for this run.`)), FULL_SYNC_TIMEOUT_MS);
+        timer = setTimeout(() => reject(new Error(`${provider} sync exceeded ${FULL_SYNC_TIMEOUT_MS / 1000}s.`)), FULL_SYNC_TIMEOUT_MS);
       }),
     ]);
   } finally {
@@ -77,33 +106,25 @@ async function withTimeout<T>(provider: string, task: Promise<T>): Promise<T> {
   }
 }
 
-export async function syncAllSiteData(siteId: string) {
-  const site = await prisma.site.findUnique({ where: { id: siteId }, select: { id: true } });
-  if (!site) throw new Error("Site not found");
-
-  const sitemap = await syncSitemap(siteId);
-  const [google, inspection, pagespeed, indexnow, technical, logs, geo] = await Promise.all([
-    settleMany("google", syncGoogleProviders(siteId)),
-    settle("google-url-inspection", syncGscUrlInspection(siteId)),
-    settle("pagespeed", runPageSpeedChecks(siteId)),
-    settle("indexnow", submitIndexNowUrls(siteId)),
-    settle("technical-seo", runTechnicalSeoAudit(siteId)),
-    settle("logs", syncAiBotLogs(siteId)),
-    settle("geo", runGeoQueryTests(siteId)),
-  ]);
-
-  const results = [sitemap, ...google, inspection, pagespeed, indexnow, technical, logs, geo];
-  await createAlertsForFailures(siteId, results);
-  return { results };
+function normalizeOptionalLogsResult(result: SyncResult): SyncResult {
+  const missingConfig = [
+    "Logs integration is not configured.",
+    "Log Directory is required.",
+    "SSH Host, SSH User and Remote Log Path are required for server log sync.",
+  ];
+  if (result.provider === "logs" && result.error && missingConfig.some((message) => result.error?.includes(message))) {
+    return { ...result, ok: true, skipped: true };
+  }
+  return result;
 }
 
 async function createAlertsForFailures(siteId: string, results: SyncResult[]) {
   await Promise.all(results
-    .filter((item) => !item.ok && item.error)
+    .filter((item) => !item.ok && item.error && !item.skipped)
     .map((item) => createSiteAlert(siteId, {
       alertType: `SYNC_${item.provider.toUpperCase()}`,
       severity: "HIGH",
-      title: `${item.provider} 同步失败`,
-      message: item.error ?? "同步失败。",
+      title: `${item.provider} sync failed`,
+      message: item.error ?? "Sync failed.",
     }).catch(() => undefined)));
 }

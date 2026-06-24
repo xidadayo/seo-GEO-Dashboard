@@ -112,6 +112,18 @@ function identifyAiBot(userAgent: string) {
   return botPatterns.find((bot) => bot.pattern.test(userAgent))?.name ?? null;
 }
 
+function identifyAiReferrer(referer: string | null | undefined) {
+  if (!referer) return null;
+  const lower = referer.toLowerCase();
+  if (lower.includes("chatgpt.com") || lower.includes("openai.com")) return "ChatGPT Referral";
+  if (lower.includes("perplexity.ai")) return "Perplexity Referral";
+  if (lower.includes("claude.ai")) return "Claude Referral";
+  if (lower.includes("gemini.google.com") || lower.includes("bard.google.com")) return "Gemini Referral";
+  if (lower.includes("copilot.microsoft.com") || lower.includes("bing.com/chat")) return "Copilot Referral";
+  if (lower.includes("you.com")) return "You.com Referral";
+  return null;
+}
+
 function toAbsoluteUrl(requestUrl: string, primaryUrl: string) {
   try {
     return new URL(requestUrl, primaryUrl).toString();
@@ -242,4 +254,37 @@ export async function syncAiBotLogs(siteId: string) {
     await setLogsStatus(siteId, false, message).catch(() => undefined);
     return { provider: "logs", ok: false, rows: 0, error: message };
   }
+}
+
+export async function recordAiBotTrackingEvent(siteId: string, event: {
+  url?: string | null;
+  referer?: string | null;
+  userAgent?: string | null;
+  ip?: string | null;
+  statusCode?: number | null;
+}) {
+  const site = await prisma.site.findUnique({ where: { id: siteId }, select: { id: true, primaryUrl: true } });
+  if (!site) throw new Error("Site not found.");
+
+  const userAgent = event.userAgent?.trim() || "unknown";
+  const referer = event.referer?.trim() || null;
+  const botName = identifyAiBot(userAgent) ?? identifyAiReferrer(referer);
+  if (!botName) return { provider: "logs-tracking", ok: true, rows: 0 };
+  const targetUrl = event.url?.trim() || site.primaryUrl;
+
+  await prisma.aiBotLog.create({
+    data: {
+      siteId,
+      botName,
+      userAgent,
+      ip: event.ip?.trim() || null,
+      url: toAbsoluteUrl(targetUrl, site.primaryUrl),
+      statusCode: event.statusCode ?? 200,
+      referer,
+      officialIpVerified: false,
+      visitedAt: new Date(),
+    },
+  });
+
+  return { provider: "logs-tracking", ok: true, rows: 1 };
 }
