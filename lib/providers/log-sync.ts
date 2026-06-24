@@ -257,7 +257,9 @@ async function fetchPublicLogText(config: LogsConfig, primaryUrl: string) {
     headers: { "user-agent": "SEO-GEO-Dashboard/1.0" },
     signal: AbortSignal.timeout(30000),
   });
-  if (!response.ok) throw new Error(`Public log URL ${url} returned HTTP ${response.status}.`);
+  if (!response.ok) {
+    throw new Error(`公开 AI 日志 URL 访问失败：${url} 返回 HTTP ${response.status}。请确认 WordPress 已生成该文件，或把 URL 改成实际可访问的日志文件地址。`);
+  }
   return response.text();
 }
 
@@ -293,10 +295,11 @@ export async function syncAiBotLogs(siteId: string) {
     if (!site) throw new Error("Site not found.");
     if (!config) throw new Error("Logs integration is not configured.");
     const rows: LogRow[] = [];
-    const publicLogText = await fetchPublicLogText(config, site.primaryUrl);
+    const publicLogUrl = publicLogUrlFromConfig(config, site.primaryUrl);
+    const publicLogText = publicLogUrl ? await fetchPublicLogText(config, site.primaryUrl) : null;
     if (publicLogText) rows.push(...rowsFromLogText(siteId, site.primaryUrl, publicLogText));
 
-    const syncedPath = publicLogText ? null : await syncRemoteLogs(config);
+    const syncedPath = publicLogUrl ? null : await syncRemoteLogs(config);
     const configuredLogPath = asString(config.logDirectory);
     const logPath = syncedPath || (configuredLogPath.startsWith("/") && !configuredLogPath.startsWith("/mnt/") ? "" : configuredLogPath);
     if (!publicLogText && !logPath) throw new Error("Log Directory or Public Log URL is required.");
