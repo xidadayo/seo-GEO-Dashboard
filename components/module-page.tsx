@@ -547,6 +547,7 @@ const aiFields: Field[] = [
 ];
 const logFields: Field[] = [
   { name: "sourceType", label: "日志来源类型", placeholder: "文件上传 / 挂载目录 / Cloudflare / Webhook" },
+  { name: "publicLogUrl", label: "公开 AI 日志 URL", placeholder: "https://example.com/ai-crawler-log.jsonl" },
   { name: "logFormat", label: "日志格式", placeholder: "nginx combined / apache combined / custom" },
   { name: "logDirectory", label: "日志目录" },
   { name: "sshHost", label: "SSH Host", placeholder: "185.xxx.xxx.xxx or server.example.com" },

@@ -17,6 +17,18 @@ type ParsedLogLine = {
   userAgent: string;
 };
 
+type LogRow = {
+  siteId: string;
+  botName: string;
+  userAgent: string;
+  ip: string | null;
+  url: string;
+  statusCode: number;
+  referer: string | null;
+  officialIpVerified: boolean;
+  visitedAt: Date;
+};
+
 const execFileAsync = promisify(execFile);
 
 const botPatterns = [
@@ -106,6 +118,28 @@ function parseCombinedLogLine(line: string): ParsedLogLine | null {
     referer: referer === "-" ? null : referer,
     userAgent,
   };
+}
+
+function parseJsonLogLine(line: string): ParsedLogLine | null {
+  try {
+    const data = JSON.parse(line) as Record<string, unknown>;
+    const userAgent = asString(data.userAgent) || asString(data.ua);
+    const url = asString(data.url) || asString(data.path);
+    if (!userAgent || !url) return null;
+    const statusCode = Number(data.statusCode ?? data.status ?? 200);
+    const visitedAt = asString(data.visitedAt) || asString(data.time) || asString(data.timestamp);
+    return {
+      ip: asString(data.ip),
+      visitedAt: visitedAt ? new Date(visitedAt) : new Date(),
+      method: asString(data.method) || "GET",
+      url,
+      statusCode: Number.isFinite(statusCode) ? statusCode : 200,
+      referer: asString(data.referer) || asString(data.referrer) || null,
+      userAgent,
+    };
+  } catch {
+    return null;
+  }
 }
 
 function identifyAiBot(userAgent: string) {
@@ -205,6 +239,40 @@ async function syncRemoteLogs(config: LogsConfig) {
   return localSyncDir;
 }
 
+async function fetchPublicLogText(config: LogsConfig) {
+  const url = asString(config.publicLogUrl) || asString(config.logFileUrl);
+  if (!url) return null;
+  const response = await fetch(url, {
+    headers: { "user-agent": "SEO-GEO-Dashboard/1.0" },
+    signal: AbortSignal.timeout(30000),
+  });
+  if (!response.ok) throw new Error(`Public log URL returned HTTP ${response.status}.`);
+  return response.text();
+}
+
+function rowsFromLogText(siteId: string, primaryUrl: string, text: string) {
+  const rows: LogRow[] = [];
+  for (const line of text.split(/\r?\n/)) {
+    if (!line.trim()) continue;
+    const parsed = parseJsonLogLine(line) ?? parseCombinedLogLine(line);
+    if (!parsed) continue;
+    const botName = identifyAiBot(parsed.userAgent) ?? identifyAiReferrer(parsed.referer);
+    if (!botName) continue;
+    rows.push({
+      siteId,
+      botName,
+      userAgent: parsed.userAgent,
+      ip: parsed.ip || null,
+      url: toAbsoluteUrl(parsed.url, primaryUrl),
+      statusCode: parsed.statusCode,
+      referer: parsed.referer,
+      officialIpVerified: false,
+      visitedAt: Number.isNaN(parsed.visitedAt.getTime()) ? new Date() : parsed.visitedAt,
+    });
+  }
+  return rows;
+}
+
 export async function syncAiBotLogs(siteId: string) {
   try {
     const [site, config] = await Promise.all([
@@ -213,34 +281,20 @@ export async function syncAiBotLogs(siteId: string) {
     ]);
     if (!site) throw new Error("Site not found.");
     if (!config) throw new Error("Logs integration is not configured.");
-    const syncedPath = await syncRemoteLogs(config);
+    const rows: LogRow[] = [];
+    const publicLogText = await fetchPublicLogText(config);
+    if (publicLogText) rows.push(...rowsFromLogText(siteId, site.primaryUrl, publicLogText));
+
+    const syncedPath = publicLogText ? null : await syncRemoteLogs(config);
     const logPath = syncedPath || asString(config.logDirectory);
-    if (!logPath) throw new Error("Log Directory is required.");
+    if (!publicLogText && !logPath) throw new Error("Log Directory or Public Log URL is required.");
 
-    const files = await listLogFiles(logPath);
-    if (files.length === 0) throw new Error(`No .log or .txt files found in ${logPath}.`);
+    const files = logPath ? await listLogFiles(logPath) : [];
+    if (!publicLogText && files.length === 0) throw new Error(`No .log or .txt files found in ${logPath}.`);
 
-    const rows = [];
     for (const file of files) {
       const text = await readFile(/*turbopackIgnore: true*/ file, "utf8");
-      for (const line of text.split(/\r?\n/)) {
-        if (!line.trim()) continue;
-        const parsed = parseCombinedLogLine(line);
-        if (!parsed) continue;
-        const botName = identifyAiBot(parsed.userAgent);
-        if (!botName) continue;
-        rows.push({
-          siteId,
-          botName,
-          userAgent: parsed.userAgent,
-          ip: parsed.ip,
-          url: toAbsoluteUrl(parsed.url, site.primaryUrl),
-          statusCode: parsed.statusCode,
-          referer: parsed.referer,
-          officialIpVerified: false,
-          visitedAt: parsed.visitedAt,
-        });
-      }
+      rows.push(...rowsFromLogText(siteId, site.primaryUrl, text));
     }
 
     await prisma.aiBotLog.deleteMany({ where: { siteId } });
