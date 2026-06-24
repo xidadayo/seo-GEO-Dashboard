@@ -239,14 +239,25 @@ async function syncRemoteLogs(config: LogsConfig) {
   return localSyncDir;
 }
 
-async function fetchPublicLogText(config: LogsConfig) {
-  const url = asString(config.publicLogUrl) || asString(config.logFileUrl);
+function publicLogUrlFromConfig(config: LogsConfig, primaryUrl: string) {
+  const explicitUrl = asString(config.publicLogUrl) || asString(config.logFileUrl);
+  if (explicitUrl) return explicitUrl;
+  const logDirectory = asString(config.logDirectory);
+  if (logDirectory.startsWith("http://") || logDirectory.startsWith("https://")) return logDirectory;
+  if (logDirectory.startsWith("/") && !logDirectory.startsWith("/mnt/")) {
+    return new URL(logDirectory, primaryUrl).toString();
+  }
+  return "";
+}
+
+async function fetchPublicLogText(config: LogsConfig, primaryUrl: string) {
+  const url = publicLogUrlFromConfig(config, primaryUrl);
   if (!url) return null;
   const response = await fetch(url, {
     headers: { "user-agent": "SEO-GEO-Dashboard/1.0" },
     signal: AbortSignal.timeout(30000),
   });
-  if (!response.ok) throw new Error(`Public log URL returned HTTP ${response.status}.`);
+  if (!response.ok) throw new Error(`Public log URL ${url} returned HTTP ${response.status}.`);
   return response.text();
 }
 
@@ -282,11 +293,12 @@ export async function syncAiBotLogs(siteId: string) {
     if (!site) throw new Error("Site not found.");
     if (!config) throw new Error("Logs integration is not configured.");
     const rows: LogRow[] = [];
-    const publicLogText = await fetchPublicLogText(config);
+    const publicLogText = await fetchPublicLogText(config, site.primaryUrl);
     if (publicLogText) rows.push(...rowsFromLogText(siteId, site.primaryUrl, publicLogText));
 
     const syncedPath = publicLogText ? null : await syncRemoteLogs(config);
-    const logPath = syncedPath || asString(config.logDirectory);
+    const configuredLogPath = asString(config.logDirectory);
+    const logPath = syncedPath || (configuredLogPath.startsWith("/") && !configuredLogPath.startsWith("/mnt/") ? "" : configuredLogPath);
     if (!publicLogText && !logPath) throw new Error("Log Directory or Public Log URL is required.");
 
     const files = logPath ? await listLogFiles(logPath) : [];
