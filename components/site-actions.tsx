@@ -50,13 +50,13 @@ export function SiteActionButton({
       }
       if (action === "geo") await postAction(`/api/sites/${siteId}/geo/run`, "GEO 测试失败。");
       if (action === "logs") await postAction(`/api/sites/${siteId}/logs/scan`, "日志扫描失败。");
-      if (action === "report") await postAction(`/api/sites/${siteId}/reports/generate`, "Report generation failed.");
-      if (action === "technical") await postAction(`/api/sites/${siteId}/technical-seo/run`, "Technical SEO audit failed.");
-      if (action === "pagespeed") await postAction(`/api/sites/${siteId}/pagespeed/run`, "PageSpeed check failed.");
-      if (action === "gsc-inspect") await postAction(`/api/sites/${siteId}/gsc/inspect`, "URL Inspection failed.");
-      if (action === "indexnow") await postAction(`/api/sites/${siteId}/indexnow/submit`, "IndexNow submission failed.");
+      if (action === "report") await postAction(`/api/sites/${siteId}/reports/generate`, "报告生成失败。");
+      if (action === "technical") await postAction(`/api/sites/${siteId}/technical-seo/run`, "技术 SEO 抓取失败。");
+      if (action === "pagespeed") await postAction(`/api/sites/${siteId}/pagespeed/run`, "PageSpeed 检测失败。");
+      if (action === "gsc-inspect") await postAction(`/api/sites/${siteId}/gsc/inspect`, "Google 索引检查失败。");
+      if (action === "indexnow") await postAction(`/api/sites/${siteId}/indexnow/submit`, "IndexNow 提交失败。");
       if (action === "alert-test") {
-        const result = await postAction(`/api/sites/${siteId}/alerts/test`, "Alert test failed.") as { delivery?: { ok?: boolean; error?: string } };
+        const result = await postAction(`/api/sites/${siteId}/alerts/test`, "告警测试失败。") as { delivery?: { ok?: boolean; error?: string } };
         alert(result.delivery?.ok ? "测试告警已发送。" : result.delivery?.error ?? "测试告警已记录。");
       }
       router.refresh();
@@ -80,7 +80,7 @@ async function postAction(url: string, fallbackMessage: string): Promise<ActionR
     const detail = Array.isArray(result.results)
       ? result.results
         .filter((item: ResultItem) => !item.skipped)
-        .map((item: ResultItem) => `${item.provider}: ${item.error}`)
+        .map((item: ResultItem) => `${providerLabel(item.provider)}：${item.error}`)
         .join("\n")
       : undefined;
     throw new Error(result.error?.message ?? result.error ?? detail ?? fallbackMessage);
@@ -91,8 +91,24 @@ async function postAction(url: string, fallbackMessage: string): Promise<ActionR
 function notifyPartialFailures(result: ActionResult | Record<string, unknown>, title: string) {
   const failed = Array.isArray(result.results) ? result.results.filter((item) => !item.ok && !item.skipped) : [];
   if (failed.length > 0) {
-    alert(`${title}：\n${failed.map((item) => `${item.provider}: ${item.error}`).join("\n")}`);
+    alert(`${title}：\n${failed.map((item) => `${providerLabel(item.provider)}：${item.error}`).join("\n")}`);
   }
+}
+
+function providerLabel(provider: string) {
+  const labels: Record<string, string> = {
+    sitemap: "站点地图",
+    "google-search-console": "Google Search Console",
+    ga4: "GA4",
+    "google-url-inspection": "Google 索引检查",
+    pagespeed: "PageSpeed",
+    indexnow: "IndexNow",
+    "technical-seo": "技术 SEO",
+    logs: "AI 爬虫日志",
+    "ai-search": "AI 可见度测试",
+    google: "Google 数据",
+  };
+  return labels[provider] ?? provider;
 }
 
 function hrefFor(action: Action, siteId?: string, target?: IntegrationTarget) {

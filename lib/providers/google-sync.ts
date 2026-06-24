@@ -14,6 +14,7 @@ type SyncResult = {
 
 const GSC_SCOPE = "https://www.googleapis.com/auth/webmasters.readonly";
 const GA4_SCOPE = "https://www.googleapis.com/auth/analytics.readonly";
+const GOOGLE_RETRY_ATTEMPTS = 5;
 
 function today(offsetDays = 0) {
   return format(subDays(new Date(), offsetDays), "yyyy-MM-dd");
@@ -97,7 +98,7 @@ async function inspectUrl(token: string, inspectionUrl: string, siteUrl: string)
   );
 }
 
-async function fetchWithRetry(request: () => Promise<Response>, label: string, attempts = 3) {
+async function fetchWithRetry(request: () => Promise<Response>, label: string, attempts = GOOGLE_RETRY_ATTEMPTS) {
   let lastError: unknown;
   for (let attempt = 1; attempt <= attempts; attempt++) {
     try {
@@ -110,7 +111,7 @@ async function fetchWithRetry(request: () => Promise<Response>, label: string, a
         throw new Error(`${label} failed before response: ${describeFetchError(error)}`);
       }
     }
-    await sleep(750 * attempt);
+    await sleep(1000 * attempt * attempt);
   }
   throw new Error(`${label} failed: ${describeFetchError(lastError)}`);
 }
@@ -144,6 +145,13 @@ function describeFetchError(error: unknown) {
     ].filter(Boolean).join("; ");
   }
   return error.message;
+}
+
+function friendlySyncError(message: string) {
+  if (message.includes("ECONNRESET") || message.includes("TLS connection") || message.includes("fetch failed")) {
+    return "连接 Google API 时网络临时中断，系统已自动重试但仍未成功。请稍后再点一次全局同步；如果连续失败，通常是本机网络、代理或到 Google API 的连接不稳定。";
+  }
+  return message;
 }
 
 export async function syncGscSearchPerformance(siteId: string): Promise<SyncResult> {
@@ -193,7 +201,7 @@ export async function syncGscSearchPerformance(siteId: string): Promise<SyncResu
     await setIntegrationStatus(siteId, provider, true);
     return { provider, ok: true, rows: rows.length };
   } catch (error) {
-    const message = error instanceof Error ? error.message : "GSC sync failed.";
+    const message = friendlySyncError(error instanceof Error ? error.message : "GSC sync failed.");
     await setIntegrationStatus(siteId, provider, false, message).catch(() => undefined);
     return { provider, ok: false, rows: 0, error: message };
   }
@@ -248,9 +256,14 @@ export async function syncGscUrlInspection(siteId: string): Promise<SyncResult> 
     }
     if (rows === 0) throw new Error(errors.slice(0, 3).join("; ") || "URL Inspection failed.");
     await setIntegrationStatus(siteId, provider, true);
-    return { provider: "google-url-inspection", ok: errors.length === 0, rows, error: errors.length ? errors.slice(0, 3).join("; ") : undefined };
+    return {
+      provider: "google-url-inspection",
+      ok: rows > 0,
+      rows,
+      error: errors.length ? `已更新 ${rows} 个 URL，另有 ${errors.length} 个 URL 因 Google API 临时失败未更新。` : undefined,
+    };
   } catch (error) {
-    const message = error instanceof Error ? error.message : "URL Inspection sync failed.";
+    const message = friendlySyncError(error instanceof Error ? error.message : "URL Inspection sync failed.");
     await setIntegrationStatus(siteId, provider, false, message).catch(() => undefined);
     return { provider: "google-url-inspection", ok: false, rows: 0, error: message };
   }
@@ -321,7 +334,7 @@ export async function syncGa4Traffic(siteId: string): Promise<SyncResult> {
     await setIntegrationStatus(siteId, provider, true);
     return { provider, ok: true, rows: rows.length };
   } catch (error) {
-    const message = error instanceof Error ? error.message : "GA4 sync failed.";
+    const message = friendlySyncError(error instanceof Error ? error.message : "GA4 sync failed.");
     await setIntegrationStatus(siteId, provider, false, message).catch(() => undefined);
     return { provider, ok: false, rows: 0, error: message };
   }
