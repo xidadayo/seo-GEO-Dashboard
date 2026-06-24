@@ -8,14 +8,6 @@ const integrationSchema = z.object({
   config: z.record(z.string(), z.unknown()),
 });
 
-function sanitizeConfig(config: Record<string, unknown>) {
-  return Object.fromEntries(Object.entries(config).filter(([, value]) => {
-    if (value == null) return false;
-    if (typeof value === "string") return value.trim() !== "";
-    return true;
-  }));
-}
-
 const sensitiveFields = new Set([
   "apiKey",
   "bingApiKey",
@@ -26,6 +18,27 @@ const sensitiveFields = new Set([
   "webhookSecret",
   "webhookUrl",
 ]);
+
+function mergeConfig(previousConfig: Record<string, unknown>, submittedConfig: Record<string, unknown>) {
+  const nextConfig = { ...previousConfig };
+  for (const [key, value] of Object.entries(submittedConfig)) {
+    if (value == null) {
+      if (!sensitiveFields.has(key)) delete nextConfig[key];
+      continue;
+    }
+    if (typeof value === "string") {
+      const trimmed = value.trim();
+      if (trimmed === "") {
+        if (!sensitiveFields.has(key)) delete nextConfig[key];
+        continue;
+      }
+      nextConfig[key] = trimmed;
+      continue;
+    }
+    nextConfig[key] = value;
+  }
+  return nextConfig;
+}
 
 function decryptConfig(payload?: string | null) {
   if (!payload) return {};
@@ -74,7 +87,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     select: { configEncrypted: true },
   });
   const previousConfig = decryptConfig(existing?.configEncrypted);
-  const config = { ...previousConfig, ...sanitizeConfig(parsed.data.config) };
+  const config = mergeConfig(previousConfig, parsed.data.config);
 
   const integration = await prisma.integration.upsert({
     where: { siteId_provider: { siteId: id, provider: parsed.data.provider } },
